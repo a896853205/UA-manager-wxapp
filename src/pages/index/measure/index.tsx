@@ -1,11 +1,9 @@
 import Taro, { useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtTabBar } from 'taro-ui';
+import { AtTabBar, AtDivider } from 'taro-ui';
 
-import Measure from './measure';
-import Me from './me';
-import Recommend from './recommend';
-
+// 组件
+import Preview from './preview';
 // #region 书写注意
 //
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -16,34 +14,31 @@ import Recommend from './recommend';
 //
 // #endregion
 
-type PageStateProps = {};
+// type PageStateProps = {};
 
-type IProps = PageStateProps;
+// type IProps = PageStateProps;
 
-interface Index {
-  props: IProps;
-}
+// interface Measure {
+//   props: IProps;
+// }
 
-const Index = () => {
+export default () => {
   const [tabCur, setTabCur] = useState(0);
 
   return (
-    <View>
-      {tabCur === 0 ? <Measure /> : null}
-      {tabCur === 1 ? <Recommend /> : null}
-      {tabCur === 2 ? <Me /> : null}
+    <View className="index">
       <AtTabBar
         tabList={[
-          { title: '测量', iconType: 'equalizer' },
-          { title: '发现', iconType: 'streaming' },
-          { title: '我的', iconType: 'user' },
+          { title: '尿频单项' },
+          { title: '血脂三联' },
+          { title: '尿酸三联' },
         ]}
         onClick={(e) => {
           setTabCur(e);
         }}
         current={tabCur}
-        fixed={true}
       />
+      <Preview />
     </View>
   );
 };
@@ -54,8 +49,3 @@ const Index = () => {
 // 这样在使用这个子类时 Ts 才不会提示缺少 JSX 类型参数错误
 //
 // #endregion
-
-Index.config = {
-};
-
-export default Index;

@@ -1,13 +1,15 @@
-import "@tarojs/async-await";
-import Taro, { Component, Config } from "@tarojs/taro";
-import { Provider } from "@tarojs/redux";
+import '@tarojs/async-await';
+import Taro, { Component, Config } from '@tarojs/taro';
+import { Provider } from '@tarojs/redux';
 
-import Index from "./pages/index";
+import global from './assets/global-style';
 
-import configStore from "./store";
+import Index from './pages/index';
 
-import "./app.css";
-import "taro-ui/dist/style/index.scss";
+import configStore from './store';
+
+import './app.css';
+import 'taro-ui/dist/style/index.scss';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -26,12 +28,12 @@ class App extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
   config: Config = {
-    pages: ["pages/index/index"],
+    pages: ['pages/index/index'],
     window: {
-      backgroundTextStyle: "light",
-      navigationBarBackgroundColor: "#fff",
-      navigationBarTitleText: "WeChat",
-      navigationBarTextStyle: "black",
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#6190e8',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'white',
     },
   };
 
@@ -46,4 +48,4 @@ class App extends Component {
   }
 }
 
-Taro.render(<App />, document.getElementById("app"));
+Taro.render(<App />, document.getElementById('app'));
