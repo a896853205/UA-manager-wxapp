@@ -1,7 +1,8 @@
-import Taro, { useState } from '@tarojs/taro';
+import Taro, { useState, useEffect } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtTabBar, AtDivider } from 'taro-ui';
-
+import { AtTabBar } from 'taro-ui';
+import { useDispatch } from '@tarojs/redux';
+import { changeMeasureType } from '../../../actions/measure';
 // 组件
 import Preview from './preview';
 // #region 书写注意
@@ -24,6 +25,24 @@ import Preview from './preview';
 
 export default () => {
   const [tabCur, setTabCur] = useState(0);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    let measureType = 'single';
+
+    switch (tabCur) {
+      case 0:
+        break;
+      case 1:
+        measureType = 'bloodFatJoint';
+        break;
+      case 2:
+        measureType = 'UAJoint';
+        break;
+    }
+
+    dispatch(changeMeasureType(measureType));
+  }, [tabCur]);
 
   return (
     <View className="index">

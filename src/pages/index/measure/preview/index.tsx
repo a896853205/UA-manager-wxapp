@@ -8,6 +8,23 @@ export default () => {
       <View className="at-article__h1">351微摩尔</View>
       <AtGrid
         columnNum={2}
+        onClick={(_item, index) => {
+          switch (index) {
+            case 0:
+              Taro.navigateTo({ url: '/pages/sync-data/index' });
+              break;
+            case 1:
+              Taro.navigateTo({ url: '/pages/news-detail/index' });
+              break;
+            case 2:
+              Taro.navigateTo({ url: '/pages/remind/index' });
+              break;
+            case 3:
+              Taro.navigateTo({ url: '/pages/aim/index' });
+              break;
+            default:
+          }
+        }}
         data={[
           {
             image:

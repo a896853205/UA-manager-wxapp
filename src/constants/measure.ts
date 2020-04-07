@@ -1,0 +1,2 @@
+
+export const CHANGE_MEASURE_TYPE = 'CHANGE_MEASURE_TYPE';
