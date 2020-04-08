@@ -40,6 +40,7 @@ export default () => {
     >
       <AtTabsPane current={0} index={0}>
         <View>
+          {/* FIXME: 多一个自定义时间,点到自定义时间时就多出一个Picker */}
           <Picker
             mode="selector"
             range={TIME_RANGE}
@@ -53,7 +54,7 @@ export default () => {
               <Text className="picker-value">{TIME_RANGE[timeSpanIndex]}</Text>
             </View>
           </Picker>
-          {/* 这里根据redux中选择哪个chart Components */}
+          {/* FIXME: 这里根据redux中选择哪个chart Components */}
           <Chart
             chartId={'1'}
             option={{
