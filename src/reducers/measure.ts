@@ -2,6 +2,7 @@ import { CHANGE_MEASURE_TYPE } from '../constants/measure';
 
 const INITIAL_STATE = {
   measureType: 'single',
+  measureText: '',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -10,6 +11,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         measureType: action.measureType,
+        measureText: action.measureText,
       };
     default:
       return state;

@@ -1,15 +1,33 @@
-import Taro, { useState } from '@tarojs/taro';
+import Taro, { useState, useEffect } from '@tarojs/taro';
 import { View, Picker, Text } from '@tarojs/components';
-import { AtTabs, AtTabsPane } from 'taro-ui';
+import { AtTabs, AtTabsPane, AtButton } from 'taro-ui';
+import { useSelector } from '@tarojs/redux';
 import Chart from 'taro-echarts';
 
 // 样式
 import './data-detail.css';
 
+interface IMeasure {
+  measureText: string;
+}
+interface IStatus {
+  measure: IMeasure;
+}
+
 const TIME_RANGE = ['过去一周', '过去一个月'];
 
-export default () => {
+const DataDetail = () => {
   const [timeSpanIndex, setTimeSpanIndex] = useState(0);
+  const { measureText } = useSelector<IStatus, IMeasure>(
+    (state) => state.measure
+  );
+
+  useEffect(() => {
+    Taro.setNavigationBarTitle({
+      title: measureText,
+    });
+  }, [measureText]);
+
   return (
     <AtTabs
       current={0}
@@ -31,25 +49,35 @@ export default () => {
               <Text className="picker-value">{TIME_RANGE[timeSpanIndex]}</Text>
             </View>
           </Picker>
+          {/* 这里根据redux中选择哪个chart Components */}
           <Chart
             chartId={'1'}
             option={{
+              grid: {
+                left: '50px',
+                right: '50px',
+              },
               xAxis: {
                 type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                data: ['一', '二', '三', '四', '五', '六', '日'],
+                name: '星期',
               },
               yAxis: {
                 type: 'value',
+                name: '微摩尔',
               },
               series: [
                 {
-                  data: [820, 932, 901, 934, 1290, 1330, 1320],
+                  data: [160, 351, 652, 352, 849, 352, 849],
                   type: 'line',
                 },
               ],
             }}
           />
         </View>
+        <AtButton type="primary" size="normal" full={true}>
+          手动添加数据
+        </AtButton>
       </AtTabsPane>
       <AtTabsPane current={1} index={1}>
         <View style="padding: 100px 50px;background-color: #FAFBFC;text-align: center;">
@@ -59,3 +87,5 @@ export default () => {
     </AtTabs>
   );
 };
+
+export default DataDetail;
