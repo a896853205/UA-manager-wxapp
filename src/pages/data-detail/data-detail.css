@@ -1,0 +1,15 @@
+.picker {
+  margin-top: 10rpx;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 20rpx 80rpx;
+  font-weight: 700;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.picker > .picker-value {
+  color: #666;
+  font-weight: 500;
+}
