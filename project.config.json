@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"projectname": "UA-wxapp",
 	"description": "尿酸安全小程序",
-	"appid": "touristappid",
+	"appid": "wxff8cb83c53a6c18a",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -12,5 +12,6 @@
 	"compileType": "miniprogram",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
+	"libVersion": "2.9.5",
 	"condition": {}
 }

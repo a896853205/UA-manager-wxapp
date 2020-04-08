@@ -2,12 +2,13 @@ import '@tarojs/async-await';
 import Taro, { Component, Config } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
+
 import Index from './pages/index';
 
 import configStore from './store';
 
-import './app.css';
 import 'taro-ui/dist/style/index.scss';
+import './app.css';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
