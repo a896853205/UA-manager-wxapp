@@ -1,14 +1,34 @@
 import Taro from '@tarojs/taro';
-import { View } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+
+// 样式
 import { AtGrid } from 'taro-ui';
+import './preview.css';
+
+// icon
+import refresh from '../../../../assets/icon/refresh.png';
+import aim from '../../../../assets/icon/aim.png';
+import bar from '../../../../assets/icon/bar.png';
+import clock from '../../../../assets/icon/clock.png';
+import config from '../../../../assets/icon/config.png';
+import newspaper from '../../../../assets/icon/newspaper.png';
 
 export default () => {
   return (
-    <View>
-      <View className="at-article__h1">351微摩尔</View>
+    <View className="page">
+      <View className="value-preview-box">
+        <View className="measure-preview">
+          351<Text className="measure-unit">微摩尔</Text>
+        </View>
+        <View className="measure-description">
+          连续<Text className="day">10</Text>天高于目标值
+        </View>
+      </View>
+
       <AtGrid
-        columnNum={2}
+        columnNum={3}
         onClick={(_item, index) => {
+          console.log(_item, index);
           switch (index) {
             case 0:
               Taro.navigateTo({ url: '/pages/sync-data/index' });
@@ -27,24 +47,29 @@ export default () => {
         }}
         data={[
           {
-            image:
-              'https://img12.360buyimg.com/jdphoto/s72x72_jfs/t6160/14/2008729947/2754/7d512a86/595c3aeeNa89ddf71.png',
+            image: refresh,
             value: '同步数据',
           },
+
           {
-            image:
-              'https://img20.360buyimg.com/jdphoto/s72x72_jfs/t15151/308/1012305375/2300/536ee6ef/5a411466N040a074b.png',
+            image: bar,
             value: '数据详情',
           },
           {
-            image:
-              'https://img10.360buyimg.com/jdphoto/s72x72_jfs/t5872/209/5240187906/2872/8fa98cd/595c3b2aN4155b931.png',
+            image: clock,
             value: '提醒设置',
           },
           {
-            image:
-              'https://img12.360buyimg.com/jdphoto/s72x72_jfs/t10660/330/203667368/1672/801735d7/59c85643N31e68303.png',
+            image: aim,
             value: '目标设置',
+          },
+          {
+            image: newspaper,
+            value: '最新新闻',
+          },
+          {
+            image: config,
+            value: '设备设置',
           },
         ]}
       />

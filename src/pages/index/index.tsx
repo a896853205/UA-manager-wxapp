@@ -29,10 +29,13 @@ const Index = () => {
 
   return (
     <View>
-      {tabCur === 0 ? <Measure /> : null}
-      {tabCur === 1 ? <Recommend /> : null}
-      {tabCur === 2 ? <Me /> : null}
+      <View className="page">
+        {tabCur === 0 ? <Measure /> : null}
+        {tabCur === 1 ? <Recommend /> : null}
+        {tabCur === 2 ? <Me /> : null}
+      </View>
       <AtTabBar
+        backgroundColor="rgb(250,250,250)"
         tabList={[
           { title: '测量', iconType: 'equalizer' },
           { title: '发现', iconType: 'streaming' },
@@ -55,7 +58,6 @@ const Index = () => {
 //
 // #endregion
 
-Index.config = {
-};
+Index.config = {};
 
 export default Index;
