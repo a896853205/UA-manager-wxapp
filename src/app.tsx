@@ -35,6 +35,7 @@ class App extends Component {
       'pages/news-detail/index',
       'pages/remind/index',
       'pages/sync-data/index',
+      'pages/save-data/index',
     ],
     window: {
       backgroundTextStyle: 'light',

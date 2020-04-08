@@ -86,6 +86,7 @@ const config = {
         to: 'dist/npm/taro-echarts/components/ec-canvas',
         ignore: ['ec-canvas.js', 'wx-canvas.js'],
       },
+      { from: 'sitemap.json', to: '/dist/weapp/sitemap.json' },
     ],
     options: {},
   },

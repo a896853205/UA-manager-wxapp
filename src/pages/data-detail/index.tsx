@@ -15,9 +15,11 @@ interface IStatus {
 }
 
 const TIME_RANGE = ['过去一周', '过去一个月'];
+const TAB_LIST = [{ title: '折线' }, { title: '统计' }];
 
-const DataDetail = () => {
+export default () => {
   const [timeSpanIndex, setTimeSpanIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
   const { measureText } = useSelector<IStatus, IMeasure>(
     (state) => state.measure
   );
@@ -30,9 +32,11 @@ const DataDetail = () => {
 
   return (
     <AtTabs
-      current={0}
-      tabList={[{ title: '折线' }, { title: '统计' }]}
-      onClick={() => {}}
+      current={tabIndex}
+      tabList={TAB_LIST}
+      onClick={(e) => {
+        setTabIndex(e);
+      }}
     >
       <AtTabsPane current={0} index={0}>
         <View>
@@ -75,7 +79,14 @@ const DataDetail = () => {
             }}
           />
         </View>
-        <AtButton type="primary" size="normal" full={true}>
+        <AtButton
+          type="primary"
+          size="normal"
+          full={true}
+          onClick={() => {
+            Taro.navigateTo({ url: '/pages/save-data/index' });
+          }}
+        >
           手动添加数据
         </AtButton>
       </AtTabsPane>
@@ -87,5 +98,3 @@ const DataDetail = () => {
     </AtTabs>
   );
 };
-
-export default DataDetail;
