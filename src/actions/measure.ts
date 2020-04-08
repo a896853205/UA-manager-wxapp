@@ -1,4 +1,4 @@
-import { CHANGE_MEASURE_TYPE } from '../constants/counter';
+import { CHANGE_MEASURE_TYPE } from '../constants/measure';
 
 export const changeMeasureType = (measureType) => {
   return {
