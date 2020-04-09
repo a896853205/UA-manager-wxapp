@@ -34,10 +34,7 @@ export default () => {
       case 0:
         break;
       case 1:
-        measureType = 'bloodFatJoint';
-        break;
-      case 2:
-        measureType = 'UAJoint';
+        measureType = 'joint';
         break;
     }
 
@@ -49,8 +46,7 @@ export default () => {
       <AtTabBar
         tabList={[
           { title: '尿频单项' },
-          { title: '血脂三联' },
-          { title: '尿酸三联' },
+          { title: '三联检测' },
         ]}
         onClick={(e) => {
           setTabCur(e);

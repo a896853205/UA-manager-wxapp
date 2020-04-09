@@ -6,11 +6,8 @@ export const changeMeasureType = (measureType) => {
     case 'single':
       measureText = '尿频单项';
       break;
-    case 'bloodFatJoint':
-      measureText = '血脂三联';
-      break;
-    case 'UAJoint':
-      measureText = '尿频三联';
+    case 'joint':
+      measureText = '三联检测';
       break;
     default:
       measureText = '';
