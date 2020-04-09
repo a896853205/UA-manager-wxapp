@@ -1,5 +1,6 @@
 import Taro, { memo } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { useSelector } from '@tarojs/redux';
 
 // 样式
 import { AtGrid } from 'taro-ui';
@@ -13,18 +14,58 @@ import clock from '../../../../assets/icon/clock.png';
 import config from '../../../../assets/icon/config.png';
 import newspaper from '../../../../assets/icon/newspaper.png';
 
+interface IMeasure {
+  measureType: string;
+}
+interface IStatus {
+  measure: IMeasure;
+}
+
 const Preview = () => {
+  const { measureType } = useSelector<IStatus, IMeasure>(
+    (state) => state.measure
+  );
+
   return (
     <View className="page">
-      <View className="value-preview-box">
-        <View className="measure-preview">
-          351<Text className="measure-unit">mmol/L</Text>
+      {/* TODO: 根据redux中的值展示单项还是多项 */}
+      {measureType === 'single' ? (
+        <View className="value-preview-box">
+          <View className="measure-preview">
+            351<Text className="measure-unit">mmol/L</Text>
+          </View>
+          <View className="measure-description">
+            连续<Text className="day">10</Text>天高于目标值
+          </View>
         </View>
-        <View className="measure-description">
-          连续<Text className="day">10</Text>天高于目标值
+      ) : null}
+      {measureType === 'joint' ? (
+        <View className="value-preview-box">
+          <View className="measure-joint-preview">
+            <View>
+              <Text className="measure-unit">尿酸</Text>351
+              <Text className="measure-unit">mmol/L</Text>
+            </View>
+            <View className="measure-description">
+              连续<Text className="day">10</Text>天高于目标值
+            </View>
+            <View>
+              <Text className="measure-unit">血脂</Text>351
+              <Text className="measure-unit">mmol/L</Text>
+            </View>
+            <View className="measure-description">
+              连续<Text className="day">10</Text>天高于目标值
+            </View>
+            <View>
+              <Text className="measure-unit">血糖</Text>351
+              <Text className="measure-unit">mmol/L</Text>
+            </View>
+            <View className="measure-description">
+              连续<Text className="day">10</Text>天高于目标值
+            </View>
+          </View>
         </View>
-      </View>
-
+      ) : null}
       <AtGrid
         columnNum={3}
         onClick={(_item, index) => {
