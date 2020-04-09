@@ -1,4 +1,4 @@
-import Taro, { useState } from '@tarojs/taro';
+import Taro, { useState, memo } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtTabBar } from 'taro-ui';
 
@@ -60,4 +60,4 @@ const Index = () => {
 
 Index.config = {};
 
-export default Index;
+export default memo(Index);

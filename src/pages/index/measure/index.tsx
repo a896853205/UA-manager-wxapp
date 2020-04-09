@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect } from '@tarojs/taro';
+import Taro, { useState, useEffect, memo } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtTabBar } from 'taro-ui';
 import { useDispatch } from '@tarojs/redux';
@@ -23,7 +23,7 @@ import Preview from './preview';
 //   props: IProps;
 // }
 
-export default () => {
+const Measure = () => {
   const [tabCur, setTabCur] = useState(0);
   const dispatch = useDispatch();
 
@@ -44,10 +44,7 @@ export default () => {
   return (
     <View className="index">
       <AtTabBar
-        tabList={[
-          { title: '尿频单项' },
-          { title: '三联检测' },
-        ]}
+        tabList={[{ title: '尿频单项' }, { title: '三联检测' }]}
         onClick={(e) => {
           setTabCur(e);
         }}
@@ -64,3 +61,5 @@ export default () => {
 // 这样在使用这个子类时 Ts 才不会提示缺少 JSX 类型参数错误
 //
 // #endregion
+
+export default memo(Measure);

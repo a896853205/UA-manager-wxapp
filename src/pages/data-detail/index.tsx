@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect } from '@tarojs/taro';
+import Taro, { useState, useEffect, memo } from '@tarojs/taro';
 import { View, Picker, Text } from '@tarojs/components';
 import { AtTabs, AtTabsPane, AtButton } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
@@ -17,7 +17,7 @@ interface IStatus {
 const TIME_RANGE = ['过去一周', '过去一个月'];
 const TAB_LIST = [{ title: '折线' }, { title: '统计' }];
 
-export default () => {
+const DataDetail = () => {
   const [timeSpanIndex, setTimeSpanIndex] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
   const { measureText } = useSelector<IStatus, IMeasure>(
@@ -99,3 +99,5 @@ export default () => {
     </AtTabs>
   );
 };
+
+export default memo(DataDetail);

@@ -1,6 +1,8 @@
-import Taro from '@tarojs/taro';
+import Taro, { memo } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 
-export default () => {
+const Remind = () => {
   return <View>view</View>;
 };
+
+export default memo(Remind);

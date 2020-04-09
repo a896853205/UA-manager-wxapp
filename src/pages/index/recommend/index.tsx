@@ -1,5 +1,5 @@
-import Taro from "@tarojs/taro";
-import { View } from "@tarojs/components";
+import Taro, { memo } from '@tarojs/taro';
+import { View } from '@tarojs/components';
 
 // #region 书写注意
 //
@@ -37,4 +37,4 @@ const Recommend = () => {
 //
 // #endregion
 
-export default Recommend;
+export default memo(Recommend);

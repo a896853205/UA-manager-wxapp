@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro';
+import Taro, { memo } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 
 // 样式
@@ -13,12 +13,12 @@ import clock from '../../../../assets/icon/clock.png';
 import config from '../../../../assets/icon/config.png';
 import newspaper from '../../../../assets/icon/newspaper.png';
 
-export default () => {
+const Preview = () => {
   return (
     <View className="page">
       <View className="value-preview-box">
         <View className="measure-preview">
-          351<Text className="measure-unit">微摩尔</Text>
+          351<Text className="measure-unit">mmol/L</Text>
         </View>
         <View className="measure-description">
           连续<Text className="day">10</Text>天高于目标值
@@ -76,3 +76,5 @@ export default () => {
     </View>
   );
 };
+
+export default memo(Preview);
