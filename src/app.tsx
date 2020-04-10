@@ -2,7 +2,6 @@ import '@tarojs/async-await';
 import Taro, { Component, Config } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
-
 import Index from './pages/index';
 
 import configStore from './store';
@@ -36,6 +35,7 @@ class App extends Component {
       'pages/remind/index',
       'pages/sync-data/index',
       'pages/save-data/index',
+      'pages/save-remind/index',
     ],
     window: {
       backgroundTextStyle: 'light',

@@ -1,6 +1,6 @@
 import Taro, { useState, useEffect, memo } from '@tarojs/taro';
 import { View, Picker, Text } from '@tarojs/components';
-import { AtTabs, AtTabsPane, AtButton, AtList, AtListItem } from 'taro-ui';
+import { AtTabs, AtTabsPane, AtButton } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 import Chart from 'taro-echarts';
 
