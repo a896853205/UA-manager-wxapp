@@ -1,6 +1,6 @@
 .value-preview-box {
   text-align: center;
-  padding-bottom: 30rpx;
+  padding: 30rpx 0;
   margin: 20rpx;
   border-radius: 10rpx;
   border-top: 1rpx solid #ddd;
@@ -23,6 +23,34 @@
 }
 
 .measure-description > .day {
+  color: #ffd700;
+  font-size: 1.5rem;
+}
+
+.measure-joint-preview > .row {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  border-bottom: 1px solid #ddd;
+}
+
+.measure-joint-preview > .row:first-child {
+  text-align: right;
+  display: block;
+  color: #666;
+  font-size: 0.8rem;
+  padding-right: 20rpx;
+}
+
+.value-num {
+  color: rgb(255, 107, 132);
+  font-size: 3rem;
+}
+.measure-unit {
+  color: #666;
+}
+
+.day {
   color: #ffd700;
   font-size: 1.5rem;
 }

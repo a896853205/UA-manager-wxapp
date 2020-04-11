@@ -40,29 +40,37 @@ const Preview = () => {
         </View>
       ) : null}
       {measureType === 'joint' ? (
-        <View className="value-preview-box">
-          <View className="measure-joint-preview">
-            <View>
-              <Text className="measure-unit">尿酸</Text>351
+        <View className="value-preview-box measure-joint-preview">
+          <View className="row">连续高位</View>
+          <View className="row">
+            <Text className="measure-project">尿酸</Text>
+            <Text className="measure-value">
+              <Text className="value-num">351</Text>
               <Text className="measure-unit">mmol/L</Text>
-            </View>
-            <View className="measure-description">
-              连续<Text className="day">10</Text>天高于目标值
-            </View>
-            <View>
-              <Text className="measure-unit">血脂</Text>351
+            </Text>
+            <Text>
+              <Text className="day">10</Text>天
+            </Text>
+          </View>
+          <View className="row">
+            <Text className="measure-project">血脂</Text>
+            <Text className="measure-value">
+              <Text className="value-num">351</Text>
               <Text className="measure-unit">mmol/L</Text>
-            </View>
-            <View className="measure-description">
-              连续<Text className="day">10</Text>天高于目标值
-            </View>
-            <View>
-              <Text className="measure-unit">血糖</Text>351
+            </Text>
+            <Text>
+              <Text className="day">10</Text>天
+            </Text>
+          </View>
+          <View className="row">
+            <Text className="measure-project">血糖</Text>
+            <Text className="measure-value">
+              <Text className="value-num">352</Text>
               <Text className="measure-unit">mmol/L</Text>
-            </View>
-            <View className="measure-description">
-              连续<Text className="day">10</Text>天高于目标值
-            </View>
+            </Text>
+            <Text>
+              <Text className="day">10</Text>天
+            </Text>
           </View>
         </View>
       ) : null}
