@@ -1,7 +1,7 @@
 .picker {
   margin-top: 10rpx;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 1rpx solid #ddd;
+  border-bottom: 1rpx solid #ddd;
   padding: 20rpx 80rpx;
   font-weight: 700;
 
@@ -12,4 +12,63 @@
 .picker > .picker-value {
   color: #666;
   font-weight: 500;
+}
+
+.line-box {
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.line-title {
+  font-size: 1.2rem;
+  border-left: 5rpx solid #6190e8;
+  padding-left: 20rpx;
+  margin-top: 10rpx;
+}
+
+.analysis-box {
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.analysis-title {
+  font-size: 1.2rem;
+  border-left: 5rpx solid #6190e8;
+  padding-left: 20rpx;
+  margin-top: 10rpx;
+}
+
+.analysis-describe {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.analysis-describe > .analysis-describe-item {
+  width: 50%;
+  border-bottom: 1rpx solid #ddd;
+  padding: 20rpx 0;
+  box-sizing: border-box;
+  font-size: 0.8rem;
+}
+
+.blue-num {
+  font-size: 1.2rem;
+  color: #6190e8;
+  margin: 0 10rpx;
+}
+
+.red-num {
+  font-size: 1.2rem;
+  color: rgb(255, 107, 132);
+  margin: 0 10rpx;
+}
+
+.green-num {
+  font-size: 1.2rem;
+  color: rgb(147, 206, 84);
+  margin: 0 10rpx;
+}
+
+.tag {
+  margin-right: 10rpx;
 }
