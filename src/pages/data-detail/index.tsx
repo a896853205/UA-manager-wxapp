@@ -1,5 +1,6 @@
 import Taro, { useState, useEffect, memo } from '@tarojs/taro';
-import { AtTabs, AtTabsPane } from 'taro-ui';
+import { View } from '@tarojs/components';
+import { AtTabBar } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 
 // 样式
@@ -20,7 +21,7 @@ interface IStatus {
 const TAB_LIST = [{ title: '折线' }, { title: '统计' }];
 
 const DataDetail = () => {
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabCur, setTabCur] = useState(0);
   const { measureText } = useSelector<IStatus, IMeasure>(
     (state) => state.measure
   );
@@ -32,20 +33,17 @@ const DataDetail = () => {
   }, [measureText]);
 
   return (
-    <AtTabs
-      current={tabIndex}
-      tabList={TAB_LIST}
-      onClick={(e) => {
-        setTabIndex(e);
-      }}
-    >
-      <AtTabsPane current={0} index={0}>
-        <Line />
-      </AtTabsPane>
-      <AtTabsPane current={1} index={1}>
-        <Analysis />
-      </AtTabsPane>
-    </AtTabs>
+    <View>
+      <AtTabBar
+        tabList={TAB_LIST}
+        onClick={(e) => {
+          setTabCur(e);
+        }}
+        current={tabCur}
+      />
+      {tabCur === 0 ? <Line /> : null}
+      {tabCur === 1 ? <Analysis /> : null}
+    </View>
   );
 };
 
