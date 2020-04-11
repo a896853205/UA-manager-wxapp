@@ -1,1 +1,294 @@
+// TODO: 上面时间段选择,饼图分析(几次偏高,几次正常),总次数,连续高位次数,最高mmol/L,最长高位天数
 // TODO: 将data-detail的折线组件抽象到这里
+import Taro, { memo } from '@tarojs/taro';
+import { View, Text } from '@tarojs/components';
+import { AtIcon } from 'taro-ui';
+import { useSelector } from '@tarojs/redux';
+import Chart from 'taro-echarts';
+
+import './analysis.css';
+
+interface IMeasure {
+  measureText: string;
+  measureType: string;
+}
+interface IStatus {
+  measure: IMeasure;
+}
+
+const Analysis = () => {
+  const { measureType } = useSelector<IStatus, IMeasure>(
+    (state) => state.measure
+  );
+
+  return (
+    <View>
+      {measureType === 'single' ? (
+        <View className="analysis-box">
+          <View className="analysis-title">尿酸</View>
+          <Chart
+            chartId={'1'}
+            option={{
+              series: [
+                {
+                  data: [
+                    {
+                      // 数据项的名称
+                      name: '偏高',
+                      // 数据项值8
+                      value: 10,
+                    },
+                    {
+                      name: '正常',
+                      value: 20,
+                    },
+                  ],
+                  type: 'pie',
+                },
+              ],
+              color: ['rgb(255, 107, 132)', 'rgb(147, 206, 84)'],
+            }}
+          />
+          <View className="analysis-describe">
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(255, 107, 132)" className="tag" />
+              <Text className="tag">
+                偏高<Text className="red-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(147, 206, 84)" className="tag" />
+              <Text className="tag">
+                正常<Text className="green-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                总共<Text className="blue-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                连续高位<Text className="blue-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最高<Text className="blue-num">652</Text>mmol/L
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最长高位<Text className="blue-num">6</Text>天
+              </Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
+      {measureType === 'joint' ? (
+        <View className="analysis-box">
+          <View className="analysis-title">尿酸</View>
+          <Chart
+            chartId={'1'}
+            option={{
+              series: [
+                {
+                  data: [
+                    {
+                      // 数据项的名称
+                      name: '偏高',
+                      // 数据项值8
+                      value: 10,
+                    },
+                    {
+                      name: '正常',
+                      value: 20,
+                    },
+                  ],
+                  type: 'pie',
+                },
+              ],
+              color: ['rgb(255, 107, 132)', 'rgb(147, 206, 84)'],
+            }}
+          />
+          <View className="analysis-describe">
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(255, 107, 132)" className="tag" />
+              <Text className="tag">
+                偏高<Text className="red-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(147, 206, 84)" className="tag" />
+              <Text className="tag">
+                正常<Text className="green-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                总共<Text className="blue-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                连续高位<Text className="blue-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最高<Text className="blue-num">652</Text>mmol/L
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最长高位<Text className="blue-num">6</Text>天
+              </Text>
+            </View>
+          </View>
+          <View className="analysis-title">血脂</View>
+          <Chart
+            chartId={'1'}
+            option={{
+              series: [
+                {
+                  data: [
+                    {
+                      // 数据项的名称
+                      name: '偏高',
+                      // 数据项值8
+                      value: 10,
+                    },
+                    {
+                      name: '正常',
+                      value: 20,
+                    },
+                  ],
+                  type: 'pie',
+                },
+              ],
+              color: ['rgb(255, 107, 132)', 'rgb(147, 206, 84)'],
+            }}
+          />
+          <View className="analysis-describe">
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(255, 107, 132)" className="tag" />
+              <Text className="tag">
+                偏高<Text className="red-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(147, 206, 84)" className="tag" />
+              <Text className="tag">
+                正常<Text className="green-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                总共<Text className="blue-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                连续高位<Text className="blue-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最高<Text className="blue-num">652</Text>mmol/L
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最长高位<Text className="blue-num">6</Text>天
+              </Text>
+            </View>
+          </View>
+          <View className="analysis-title">血糖</View>
+          <Chart
+            chartId={'1'}
+            option={{
+              series: [
+                {
+                  data: [
+                    {
+                      // 数据项的名称
+                      name: '偏高',
+                      // 数据项值8
+                      value: 10,
+                    },
+                    {
+                      name: '正常',
+                      value: 20,
+                    },
+                  ],
+                  type: 'pie',
+                },
+              ],
+              color: ['rgb(255, 107, 132)', 'rgb(147, 206, 84)'],
+            }}
+          />
+          <View className="analysis-describe">
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(255, 107, 132)" className="tag" />
+              <Text className="tag">
+                偏高<Text className="red-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="rgb(147, 206, 84)" className="tag" />
+              <Text className="tag">
+                正常<Text className="green-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                总共<Text className="blue-num">20</Text>次
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                连续高位<Text className="blue-num">6</Text>次
+              </Text>
+            </View>
+
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最高<Text className="blue-num">652</Text>mmol/L
+              </Text>
+            </View>
+            <View className="analysis-describe-item">
+              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <Text className="tag">
+                最长高位<Text className="blue-num">6</Text>天
+              </Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
+    </View>
+  );
+};
+
+export default memo(Analysis);
