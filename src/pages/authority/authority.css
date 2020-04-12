@@ -1,0 +1,23 @@
+.button-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+.button-group > .btn {
+  width: 30%;
+  text-align: center;
+  padding: 25rpx;
+  border-radius: 10rpx;
+  font-size: 0.8rem;
+}
+
+.primary {
+  border: 1px solid #6190e8;
+  background: #6190e8;
+  color: #fff;
+}
+
+.secondary {
+  border: 1px solid #6190e8;
+  color: #6190e8;
+}

@@ -2,7 +2,7 @@ import '@tarojs/async-await';
 import Taro, { Component, Config } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
-import Index from './pages/index';
+import Authority from './pages/authority/index';
 
 import configStore from './store';
 
@@ -27,6 +27,8 @@ class App extends Component {
    */
   config: Config = {
     pages: [
+      'pages/authority/index',
+      'pages/login/index',
       'pages/index/index',
       'pages/aim/index',
       'pages/data-detail/index',
@@ -50,7 +52,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Index />
+        <Authority />
       </Provider>
     );
   }
