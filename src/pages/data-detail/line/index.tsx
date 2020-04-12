@@ -1,7 +1,7 @@
 // TODO: 将data-detail的折线组件抽象到这里
 import Taro, { useState, memo } from '@tarojs/taro';
 import { View, Picker, Text } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
+import { AtButton, AtList, AtListItem } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 import Chart from 'taro-echarts';
 
@@ -34,10 +34,13 @@ const Line = () => {
         }}
         value={timeSpanIndex}
       >
-        <View className="picker">
-          <Text>时间段选择：</Text>
-          <Text className="picker-value">{TIME_RANGE[timeSpanIndex]}</Text>
-        </View>
+        <AtList>
+          <AtListItem
+            title="时间段选择："
+            extraText={TIME_RANGE[timeSpanIndex]}
+            arrow="right"
+          />
+        </AtList>
       </Picker>
       {/* FIXME: 需要将图表组件提出 */}
       {measureType === 'single' ? (
