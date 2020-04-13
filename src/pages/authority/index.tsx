@@ -1,40 +1,73 @@
 import Taro, { memo } from '@tarojs/taro';
-import { View, Image } from '@tarojs/components';
+import { View, Image, Swiper, SwiperItem } from '@tarojs/components';
 
 import './authority.css';
 
-import authority from '../../assets/image/authority.png';
+// import authority1 from '../../assets/image/authority1.jpg';
+// import authority2 from '../../assets/image/authority2.jpg';
+// import authority3 from '../../assets/image/authority3.jpg';
 
 const Authority = () => {
   return (
-    <View>
-      <Image
-        src={authority}
-        style={{
-          width: '100%',
+    <View className="authority-box">
+      <Swiper
+        className="swiper"
+        indicatorColor="#ddd"
+        indicatorActiveColor="#6190e8"
+        circular
+        indicatorDots
+        autoplay
+      >
+        <SwiperItem>
+          <View className="swiper-item">
+            <Image
+              className="img"
+              mode="aspectFit"
+              src="https://s1.ax1x.com/2020/04/13/GjQAN4.jpg"
+            />
+            <View>为您提供一站式服务</View>
+          </View>
+        </SwiperItem>
+        <SwiperItem>
+          <View className="swiper-item">
+            <Image
+              className="img"
+              mode="aspectFit"
+              src="https://s1.ax1x.com/2020/04/13/GjQkEF.jpg"
+            />
+            <View>您的健康安心掌握</View>
+          </View>
+        </SwiperItem>
+        <SwiperItem>
+          <View className="swiper-item">
+            <Image
+              className="img"
+              mode="aspectFit"
+              src="https://s1.ax1x.com/2020/04/13/GjQiHU.jpg"
+            />
+            <View>时刻关注您的健康</View>
+          </View>
+        </SwiperItem>
+      </Swiper>
+      <View
+        className="btn primary"
+        onClick={() => {
+          Taro.redirectTo({
+            url: '../../pages/index/index',
+          });
         }}
-      />
-      <View className="button-group">
-        <View
-          className="btn primary"
-          onClick={() => {
-            Taro.redirectTo({
-              url: '../../pages/index/index',
-            });
-          }}
-        >
-          我是患者
-        </View>
-        <View
-          className="btn secondary"
-          onClick={() => {
-            Taro.redirectTo({
-              url: '../../pages/login/index',
-            });
-          }}
-        >
-          我是医生
-        </View>
+      >
+        我是患者
+      </View>
+      <View
+        className="btn secondary"
+        onClick={() => {
+          Taro.redirectTo({
+            url: '../../pages/login/index',
+          });
+        }}
+      >
+        我是医生
       </View>
     </View>
   );

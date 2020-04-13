@@ -42,7 +42,7 @@ class App extends Component {
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#6190e8',
-      navigationBarTitleText: '',
+      navigationBarTitleText: '尿酸管理',
       navigationBarTextStyle: 'white',
     },
   };

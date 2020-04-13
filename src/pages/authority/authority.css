@@ -1,20 +1,40 @@
+.swiper {
+  height: 750rpx;
+  margin: 40rpx 0;
+}
+
+.swiper-item {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  color: #666;
+}
+
+.img {
+  width: 100%;
+  min-height: 600rpx;
+}
+
 .button-group {
   display: flex;
   justify-content: space-around;
 }
 
-.button-group > .btn {
-  width: 30%;
+.btn {
+  width: 75%;
   text-align: center;
   padding: 25rpx;
   border-radius: 10rpx;
   font-size: 0.8rem;
+  margin: 0 auto;
 }
 
 .primary {
   border: 1px solid #6190e8;
   background: #6190e8;
   color: #fff;
+  margin-bottom: 15rpx;
 }
 
 .secondary {
