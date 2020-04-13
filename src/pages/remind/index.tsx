@@ -1,6 +1,6 @@
 import Taro, { memo, useEffect } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtSwipeAction, AtButton } from 'taro-ui';
+import { AtSwipeAction, AtButton, AtList, AtListItem } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 
 interface IMeasure {
@@ -22,7 +22,7 @@ const Remind = () => {
   }, [measureText]);
 
   return (
-    <View>
+    <AtList>
       <AtSwipeAction
         options={[
           {
@@ -39,13 +39,7 @@ const Remind = () => {
           },
         ]}
       >
-        <View
-          style={{
-            height: '160rpx',
-          }}
-        >
-          闹钟1 16:38
-        </View>
+        <AtListItem title="闹钟1" arrow="right" extraText="16:38" />
       </AtSwipeAction>
       <AtSwipeAction
         options={[
@@ -63,13 +57,7 @@ const Remind = () => {
           },
         ]}
       >
-        <View
-          style={{
-            height: '160rpx',
-          }}
-        >
-          闹钟1 16:38
-        </View>
+        <AtListItem title="闹钟2" arrow="right" extraText="16:39" />
       </AtSwipeAction>
       <AtSwipeAction
         options={[
@@ -87,13 +75,7 @@ const Remind = () => {
           },
         ]}
       >
-        <View
-          style={{
-            height: '160rpx',
-          }}
-        >
-          闹钟1 16:38
-        </View>
+        <AtListItem title="闹钟3" arrow="right" extraText="16:40" />
       </AtSwipeAction>
       <AtButton
         full
@@ -104,7 +86,7 @@ const Remind = () => {
       >
         添加闹铃
       </AtButton>
-    </View>
+    </AtList>
   );
 };
 

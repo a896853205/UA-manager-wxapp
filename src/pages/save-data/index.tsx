@@ -1,5 +1,5 @@
 import Taro, { memo } from '@tarojs/taro';
-import { View, Text, Picker } from '@tarojs/components';
+import { View, Picker } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
 
 import { AtButton, AtInput, AtList, AtListItem } from 'taro-ui';

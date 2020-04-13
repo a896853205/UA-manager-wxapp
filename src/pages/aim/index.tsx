@@ -1,6 +1,6 @@
 import Taro, { memo, useEffect } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtInputNumber, AtButton } from 'taro-ui';
+import { AtInput, AtButton } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 
 interface IMeasure {
@@ -25,43 +25,39 @@ const Aim = () => {
   return (
     <View>
       {measureType === 'single' ? (
-        <AtInputNumber
+        <AtInput
+          name="UA"
+          title="尿酸值"
           type="number"
-          min={0}
-          max={1500}
-          step={1}
-          width={200}
-          value={0}
+          placeholder="请输入尿酸值的目标"
+          value={'352'}
           onChange={() => {}}
         />
       ) : null}
       {measureType === 'joint' ? (
         <View>
-          <AtInputNumber
+          <AtInput
+            name="UA"
+            title="尿酸值"
             type="number"
-            min={0}
-            max={1500}
-            step={1}
-            width={200}
-            value={0}
+            placeholder="请输入尿酸值的目标"
+            value={'352'}
             onChange={() => {}}
           />
-          <AtInputNumber
+          <AtInput
+            name="UA"
+            title="血糖值"
             type="number"
-            min={0}
-            max={1500}
-            step={1}
-            width={200}
-            value={0}
+            placeholder="请输入血糖值的目标"
+            value={'352'}
             onChange={() => {}}
           />
-          <AtInputNumber
+          <AtInput
+            name="UA"
+            title="血脂值"
             type="number"
-            min={0}
-            max={1500}
-            step={1}
-            width={200}
-            value={0}
+            placeholder="请输入血脂值的目标"
+            value={'352'}
             onChange={() => {}}
           />
         </View>
