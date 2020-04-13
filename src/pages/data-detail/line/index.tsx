@@ -1,6 +1,6 @@
 // TODO: 将data-detail的折线组件抽象到这里
 import Taro, { useState, memo } from '@tarojs/taro';
-import { View, Picker, Text } from '@tarojs/components';
+import { View, Picker } from '@tarojs/components';
 import { AtButton, AtList, AtListItem } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 import Chart from 'taro-echarts';
@@ -42,7 +42,6 @@ const Line = () => {
           />
         </AtList>
       </Picker>
-      {/* FIXME: 需要将图表组件提出 */}
       {measureType === 'single' ? (
         <View className="line-box">
           <View className="line-title">尿酸</View>

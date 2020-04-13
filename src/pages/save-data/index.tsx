@@ -2,7 +2,7 @@ import Taro, { memo } from '@tarojs/taro';
 import { View, Text, Picker } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
 
-import { AtButton, AtInputNumber } from 'taro-ui';
+import { AtButton, AtInput, AtList, AtListItem } from 'taro-ui';
 interface IMeasure {
   measureType: string;
 }
@@ -18,41 +18,92 @@ const SaveData = () => {
       {/* TODO: 表单,数据input(1-3),时间选择,保存按钮 */}
       {measureType === 'single' ? (
         <View>
-          <View>手动添加尿酸信息</View>
-          <View>
-            <Text>尿酸数值(mmol/L)</Text>
-            <AtInputNumber
-              type="number"
-              min={0}
-              max={1500}
-              step={1}
-              value={356}
-              onChange={() => {}}
-            />
-          </View>
-          <View className="page-section">
-            <Text>日期选择器</Text>
-            <View>
-              <Picker mode="date" onChange={() => {}} value={''}>
-                <View className="picker">当前选择：</View>
-              </Picker>
-            </View>
-          </View>
-          <View className="page-section">
-            <Text>时间选择器</Text>
-            <View>
-              <Picker mode="time" onChange={() => {}} value={''}>
-                <View className="picker">当前选择：</View>
-              </Picker>
-            </View>
-          </View>
+          <AtInput
+            name="UA"
+            title="尿酸值"
+            type="number"
+            placeholder="请输入尿酸值"
+            value={'352'}
+            onChange={() => {}}
+          />
+
+          <Picker mode="date" onChange={() => {}} value={''}>
+            <AtList>
+              <AtListItem
+                title="日期选择："
+                extraText={'2019年6月12日'}
+                arrow="right"
+              />
+            </AtList>
+          </Picker>
+
+          <Picker mode="time" onChange={() => {}} value={''}>
+            <AtList>
+              <AtListItem
+                title="时间选择："
+                extraText={'19:00'}
+                arrow="right"
+              />
+            </AtList>
+          </Picker>
 
           <AtButton type="primary" full={true}>
             保存
           </AtButton>
         </View>
       ) : null}
-      {measureType === 'joint' ? <View></View> : null}
+      {measureType === 'joint' ? (
+        <View>
+          <AtInput
+            name="UA"
+            title="尿酸值"
+            type="number"
+            placeholder="请输入尿酸值"
+            value={'352'}
+            onChange={() => {}}
+          />
+          <AtInput
+            name="UA"
+            title="血脂值"
+            type="number"
+            placeholder="请输入血脂值"
+            value={'352'}
+            onChange={() => {}}
+          />
+          <AtInput
+            name="UA"
+            title="血糖值"
+            type="number"
+            placeholder="请输入血糖值"
+            value={'352'}
+            onChange={() => {}}
+          />
+
+          <Picker mode="date" onChange={() => {}} value={''}>
+            <AtList>
+              <AtListItem
+                title="日期选择："
+                extraText={'2019年6月12日'}
+                arrow="right"
+              />
+            </AtList>
+          </Picker>
+
+          <Picker mode="time" onChange={() => {}} value={''}>
+            <AtList>
+              <AtListItem
+                title="时间选择："
+                extraText={'19:00'}
+                arrow="right"
+              />
+            </AtList>
+          </Picker>
+
+          <AtButton type="primary" full={true}>
+            保存
+          </AtButton>
+        </View>
+      ) : null}
     </View>
   );
 };

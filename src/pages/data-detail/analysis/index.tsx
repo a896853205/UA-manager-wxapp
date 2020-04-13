@@ -1,8 +1,8 @@
 // TODO: 上面时间段选择,饼图分析(几次偏高,几次正常),总次数,连续高位次数,最高mmol/L,最长高位天数
 // TODO: 将data-detail的折线组件抽象到这里
-import Taro, { memo } from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
-import { AtIcon } from 'taro-ui';
+import Taro, { memo, useState } from '@tarojs/taro';
+import { View, Text, Picker } from '@tarojs/components';
+import { AtIcon, AtList, AtListItem } from 'taro-ui';
 import { useSelector } from '@tarojs/redux';
 import Chart from 'taro-echarts';
 
@@ -16,13 +16,33 @@ interface IStatus {
   measure: IMeasure;
 }
 
+const TIME_RANGE = ['过去一周', '过去一个月'];
+
 const Analysis = () => {
+  const [timeSpanIndex, setTimeSpanIndex] = useState(0);
   const { measureType } = useSelector<IStatus, IMeasure>(
     (state) => state.measure
   );
 
   return (
     <View>
+      {/* FIXME: 多一个自定义时间,点到自定义时间时就多出一个Picker */}
+      <Picker
+        mode="selector"
+        range={TIME_RANGE}
+        onChange={(e) => {
+          setTimeSpanIndex(+e.detail.value);
+        }}
+        value={timeSpanIndex}
+      >
+        <AtList>
+          <AtListItem
+            title="时间段选择："
+            extraText={TIME_RANGE[timeSpanIndex]}
+            arrow="right"
+          />
+        </AtList>
+      </Picker>
       {measureType === 'single' ? (
         <View className="analysis-box">
           <View className="analysis-title">尿酸</View>
