@@ -1,6 +1,8 @@
 import Taro, { memo } from '@tarojs/taro';
 import { View, Swiper, SwiperItem, Image, Text } from '@tarojs/components';
+import { AtIcon } from 'taro-ui';
 
+import './recommend.css';
 // #region 书写注意
 //
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -28,77 +30,97 @@ const Recommend = () => {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
   return (
-    <View>
-      <View>精选专题</View>
-      <Swiper
-        className="swiper"
-        indicatorColor="#ddd"
-        indicatorActiveColor="#6190e8"
-        circular
-        indicatorDots
-        autoplay
-      >
-        <SwiperItem>
-          <View className="swiper-item">
-            <Image
-              className="img"
-              mode="aspectFit"
-              src="https://s1.ax1x.com/2020/04/13/GjQAN4.jpg"
-            />
-            <View>为您提供一站式服务</View>
-          </View>
-        </SwiperItem>
-        <SwiperItem>
-          <View className="swiper-item">
-            <Image
-              className="img"
-              mode="aspectFit"
-              src="https://s1.ax1x.com/2020/04/13/GjQkEF.jpg"
-            />
-            <View>您的健康安心掌握</View>
-          </View>
-        </SwiperItem>
-        <SwiperItem>
-          <View className="swiper-item">
-            <Image
-              className="img"
-              mode="aspectFit"
-              src="https://s1.ax1x.com/2020/04/13/GjQiHU.jpg"
-            />
-            <View>时刻关注您的健康</View>
-          </View>
-        </SwiperItem>
-      </Swiper>
-      <View>
-        <View>
-          <View>
-            <Text></Text>
-            <Text>
-              <Text></Text>
-              <Text></Text>
-            </Text>
-          </View>
-          <Image src="" />
+    <View className="recommed-box">
+      <View className="recommed-top-box">
+        <View className="recommend-title">
+          <AtIcon value="streaming" color="#6190e8" />
+          <Text className="recommend-title-text">精选专题</Text>
         </View>
-        <View>
-          <View>
-            <Text></Text>
-            <Text>
-              <Text></Text>
-              <Text></Text>
+        <Swiper
+          className="swiper"
+          indicatorColor="#ddd"
+          indicatorActiveColor="#6190e8"
+          circular
+          indicatorDots
+          autoplay
+        >
+          <SwiperItem>
+            <View className="swiper-item">
+              <Image
+                className="img"
+                mode="aspectFill"
+                src="https://hbimg.huabanimg.com/e35445ac296e2f94cd44794d6bd549a7272d0bc73ef61-BvYVv2_fw658"
+              />
+            </View>
+          </SwiperItem>
+          <SwiperItem>
+            <View className="swiper-item">
+              <Image
+                className="img"
+                mode="aspectFill"
+                src="https://hbimg.huabanimg.com/498e7e66ff06ca704ce35a66d4d37c7bc2c3dbc843d19-5w53fb_fw658"
+              />
+            </View>
+          </SwiperItem>
+          <SwiperItem>
+            <View className="swiper-item">
+              <Image
+                className="img"
+                mode="aspectFill"
+                src="https://hbimg.huabanimg.com/7d7099b44e118fb30a523930f9f29fa33da9126b4413e-ALe6jw_fw658"
+              />
+            </View>
+          </SwiperItem>
+        </Swiper>
+      </View>
+      <View className="recommend-list-box">
+        <View className="recommend-item-box">
+          <View className="recommend-item-left-box">
+            <Text className="recommend-item-title">
+              糖尿病早期,胰岛细胞损伤具有逆转可能性
+            </Text>
+            <Text className="recommend-item-describe">
+              <Text>尿酸管理小程序</Text>
+              <Text className="read-num">8230阅读</Text>
             </Text>
           </View>
-          <Image src="" />
+          <Image
+            className="recommend-item-right-img"
+            mode="aspectFill"
+            src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1586885242694&di=03bb9f38678b8972c97e1c0dfe7201a1&imgtype=0&src=http%3A%2F%2Fr.sinaimg.cn%2Flarge%2Farticle%2F4edc20d43c8574cf8b21e1a4738e1c5e"
+          />
         </View>
-        <View>
-          <View>
-            <Text></Text>
-            <Text>
-              <Text></Text>
-              <Text></Text>
+        <View className="recommend-item-box">
+          <View className="recommend-item-left-box">
+            <Text className="recommend-item-title">
+              糖尿病早期,胰岛细胞损伤具有逆转可能性
+            </Text>
+            <Text className="recommend-item-describe">
+              <Text>尿酸管理小程序</Text>
+              <Text className="read-num">8230阅读</Text>
             </Text>
           </View>
-          <Image src="" />
+          <Image
+            className="recommend-item-right-img"
+            mode="aspectFill"
+            src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1586886007338&di=8057e9bb342bb5f31968d500a207c191&imgtype=0&src=http%3A%2F%2Fn.sinaimg.cn%2Fsinacn19%2F64%2Fw1000h664%2F20181017%2F4967-hmhhnqs8530018.jpg"
+          />
+        </View>
+        <View className="recommend-item-box">
+          <View className="recommend-item-left-box">
+            <Text className="recommend-item-title">
+              糖尿病吃面全攻略,面条吃饱吃好还不升糖
+            </Text>
+            <Text className="recommend-item-describe">
+              <Text>尿酸管理小程序</Text>
+              <Text className="read-num">8230阅读</Text>
+            </Text>
+          </View>
+          <Image
+            className="recommend-item-right-img"
+            mode="aspectFill"
+            src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2397700751,3035183254&fm=26&gp=0.jpg"
+          />
         </View>
       </View>
     </View>

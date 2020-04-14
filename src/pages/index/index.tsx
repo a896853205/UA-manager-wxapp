@@ -35,6 +35,7 @@ const Index = () => {
         {tabCur === 2 ? <Me /> : null}
       </View>
       <AtTabBar
+        className="tab-bar"
         backgroundColor="rgb(250,250,250)"
         tabList={[
           { title: '测量', iconType: 'equalizer' },

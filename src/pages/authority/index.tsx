@@ -22,7 +22,7 @@ const Authority = () => {
           <View className="swiper-item">
             <Image
               className="img"
-              mode="aspectFit"
+              mode="aspectFill"
               src="https://s1.ax1x.com/2020/04/13/GjQAN4.jpg"
             />
             <View>为您提供一站式服务</View>
@@ -32,7 +32,7 @@ const Authority = () => {
           <View className="swiper-item">
             <Image
               className="img"
-              mode="aspectFit"
+              mode="aspectFill"
               src="https://s1.ax1x.com/2020/04/13/GjQkEF.jpg"
             />
             <View>您的健康安心掌握</View>
@@ -42,7 +42,7 @@ const Authority = () => {
           <View className="swiper-item">
             <Image
               className="img"
-              mode="aspectFit"
+              mode="aspectFill"
               src="https://s1.ax1x.com/2020/04/13/GjQiHU.jpg"
             />
             <View>时刻关注您的健康</View>
