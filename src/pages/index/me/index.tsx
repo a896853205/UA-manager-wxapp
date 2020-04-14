@@ -1,16 +1,9 @@
 import Taro, { memo } from '@tarojs/taro';
-import { View } from '@tarojs/components';
+import { View, Image, Text } from '@tarojs/components';
+import { AtIcon } from 'taro-ui';
 
-// #region 书写注意
-//
-// 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
-// 需要显示声明 connect 的参数类型并通过 interface 的方式指定 Taro.Component 子类的 props
-// 这样才能完成类型检查和 IDE 的自动提示
-// 使用函数模式则无此限制
-// ref: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20796
-//
-// #endregion
-
+import './me.css';
+import meTopBackground from '../../../assets/image/me-top-background.png';
 type PageStateProps = {};
 
 type IProps = PageStateProps;
@@ -27,7 +20,41 @@ const Me = () => {
    * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
-  return <View className="index">me</View>;
+  return (
+    <View className="me-box">
+      <Image src={meTopBackground} className="me-background" mode="widthFix" />
+      <View className="me-list">
+        <View className="me-item me-profile">
+          <Image
+            src="https://img2.woyaogexing.com/2020/04/14/fa870d305ba64868a585b8ccbd270a5b!400x400.jpeg"
+            className="me-head-profile"
+          />
+          <View className="me-describe">
+            <Text>用户名</Text>
+            <Text className="me-position">哈尔滨</Text>
+          </View>
+        </View>
+        <View className="me-item">
+          <View className="item-title">健康档案</View>
+          <View className="item-list">
+            <View className="item-cell">
+              <AtIcon value="bookmark" size="40" color="#6190e8" />
+              <View className="item-name">我的档案</View>
+            </View>
+          </View>
+        </View>
+        <View className="me-item">
+          <View className="item-title">我的亲友</View>
+          <View className="item-list">
+            <View className="item-cell">
+              <AtIcon value="list" size="40" color="#6190e8" />
+              <View className="item-name">亲友列表</View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
 };
 
 // #region 导出注意
