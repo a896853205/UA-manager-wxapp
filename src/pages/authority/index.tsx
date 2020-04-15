@@ -13,6 +13,9 @@ const Authority = () => {
       backgroundColor: '#fff',
       frontColor: '#000000',
     });
+    Taro.setNavigationBarTitle({
+      title: '登录授权',
+    });
   }, []);
 
   return (
