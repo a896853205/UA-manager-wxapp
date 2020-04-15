@@ -1,6 +1,6 @@
 .swiper {
   height: 750rpx;
-  margin: 40rpx 0;
+  margin: 50rpx auto;
 }
 
 .swiper-item {
@@ -22,22 +22,23 @@
 }
 
 .btn {
-  width: 75%;
+  width: 341rpx;
+  height: 86rpx;
+  border-radius: 45rpx;
+  line-height: 90rpx;
   text-align: center;
-  padding: 25rpx;
-  border-radius: 10rpx;
   font-size: 0.8rem;
   margin: 0 auto;
 }
 
 .primary {
-  border: 1px solid #6190e8;
+  border: 2rpx solid #6190e8;
   background: #6190e8;
   color: #fff;
-  margin-bottom: 15rpx;
+  margin-bottom: 28rpx;
 }
 
 .secondary {
-  border: 1px solid #6190e8;
+  border: 2rpx solid #6190e8;
   color: #6190e8;
 }

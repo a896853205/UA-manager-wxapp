@@ -1,4 +1,4 @@
-import Taro, { memo } from '@tarojs/taro';
+import Taro, { memo, useEffect } from '@tarojs/taro';
 import { View, Image, Swiper, SwiperItem } from '@tarojs/components';
 
 import './authority.css';
@@ -8,6 +8,13 @@ import './authority.css';
 // import authority3 from '../../assets/image/authority3.jpg';
 
 const Authority = () => {
+  useEffect(() => {
+    Taro.setNavigationBarColor({
+      backgroundColor: '#fff',
+      frontColor: '#000000',
+    });
+  }, []);
+
   return (
     <View className="authority-box">
       <Swiper
