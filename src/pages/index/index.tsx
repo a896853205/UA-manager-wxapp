@@ -4,6 +4,7 @@ import { AtTabBar } from 'taro-ui';
 
 import Measure from './measure';
 import Patient from './patient';
+import Me from './me';
 
 // #region 书写注意
 //
@@ -31,6 +32,7 @@ const Index = () => {
       <View className="page">
         {tabCur === 0 ? <Measure /> : null}
         {tabCur === 1 ? <Patient /> : null}
+        {tabCur === 2 ? <Me /> : null}
       </View>
       <AtTabBar
         className="tab-bar"
@@ -38,6 +40,7 @@ const Index = () => {
         tabList={[
           { title: '测量', iconType: 'equalizer' },
           { title: '患者', iconType: 'streaming' },
+          { title: '我的', iconType: 'user' },
         ]}
         onClick={(e) => {
           setTabCur(e);

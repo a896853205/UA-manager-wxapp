@@ -10,6 +10,7 @@ import './preview.css';
 import refresh from '../../../../assets/icon/refresh.png';
 import bar from '../../../../assets/icon/bar.png';
 import config from '../../../../assets/icon/config.png';
+import doctor from '../../../../assets/icon/doctor.png';
 
 interface Imeasure {
   measureType: string;
@@ -81,6 +82,12 @@ const Preview = () => {
             case 1:
               Taro.navigateTo({ url: '/pages/data-detail/index' });
               break;
+            case 2:
+              // Taro.navigateTo({ url: '/pages/data-detail/index' });
+              break;
+            case 3:
+              Taro.navigateTo({ url: '/pages/doctor/index' });
+              break;
             default:
           }
         }}
@@ -97,6 +104,10 @@ const Preview = () => {
           {
             image: config,
             value: '设备设置',
+          },
+          {
+            image: doctor,
+            value: '医生选择',
           },
         ]}
       />

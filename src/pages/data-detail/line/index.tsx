@@ -157,7 +157,7 @@ const Line = () => {
       <AtButton
         type="primary"
         size="normal"
-        full={true}
+        full
         onClick={() => {
           Taro.navigateTo({ url: '/pages/save-data/index' });
         }}

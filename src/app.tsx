@@ -37,6 +37,9 @@ class App extends Component {
       'pages/save-remind/index',
       'pages/add-patient/index',
       'pages/login/index',
+      'pages/doctor/index',
+      'pages/doctor-detail/index',
+      'pages/patient-analytics/index',
     ],
     window: {
       backgroundTextStyle: 'light',
