@@ -28,6 +28,12 @@ const Measure = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    Taro.setNavigationBarTitle({
+      title: '数据测量',
+    });
+  }, []);
+
+  useEffect(() => {
     let measureType = 'single';
 
     switch (tabCur) {
@@ -39,7 +45,7 @@ const Measure = () => {
     }
 
     dispatch(changeMeasureType(measureType));
-  }, [tabCur]);
+  }, [tabCur, dispatch]);
 
   return (
     <View className="index">

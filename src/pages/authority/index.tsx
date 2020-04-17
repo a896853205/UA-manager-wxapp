@@ -63,11 +63,11 @@ const Authority = () => {
         className="btn primary"
         onClick={() => {
           Taro.redirectTo({
-            url: '../../pages/index/index',
+            url: '../../pages/login/index',
           });
         }}
       >
-        我要登录
+        社区志愿者授权
       </View>
     </View>
   );

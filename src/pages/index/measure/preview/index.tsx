@@ -10,7 +10,6 @@ import './preview.css';
 import refresh from '../../../../assets/icon/refresh.png';
 import bar from '../../../../assets/icon/bar.png';
 import config from '../../../../assets/icon/config.png';
-import newspaper from '../../../../assets/icon/newspaper.png';
 
 interface Imeasure {
   measureType: string;
@@ -75,7 +74,6 @@ const Preview = () => {
       <AtGrid
         columnNum={3}
         onClick={(_item, index) => {
-          console.log(_item, index);
           switch (index) {
             case 0:
               Taro.navigateTo({ url: '/pages/sync-data/index' });
@@ -95,10 +93,6 @@ const Preview = () => {
           {
             image: bar,
             value: '数据详情',
-          },
-          {
-            image: newspaper,
-            value: '最新新闻',
           },
           {
             image: config,

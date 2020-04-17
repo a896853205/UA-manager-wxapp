@@ -3,8 +3,7 @@ import { View } from '@tarojs/components';
 import { AtTabBar } from 'taro-ui';
 
 import Measure from './measure';
-import Me from './me';
-import Recommend from './recommend';
+import Patient from './patient';
 
 // #region 书写注意
 //
@@ -25,28 +24,26 @@ interface Index {
 }
 
 const Index = () => {
-  const [tabCur, setTabCur] = useState(0);
+  const [tabCur, setTabCur] = useState(1);
 
   return (
     <View>
       <View className="page">
         {tabCur === 0 ? <Measure /> : null}
-        {tabCur === 1 ? <Recommend /> : null}
-        {tabCur === 2 ? <Me /> : null}
+        {tabCur === 1 ? <Patient /> : null}
       </View>
       <AtTabBar
         className="tab-bar"
         backgroundColor="rgb(250,250,250)"
         tabList={[
           { title: '测量', iconType: 'equalizer' },
-          { title: '发现', iconType: 'streaming' },
-          { title: '我的', iconType: 'user' },
+          { title: '患者', iconType: 'streaming' },
         ]}
         onClick={(e) => {
           setTabCur(e);
         }}
         current={tabCur}
-        fixed={true}
+        fixed
       />
     </View>
   );

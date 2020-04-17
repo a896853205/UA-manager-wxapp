@@ -1,8 +1,8 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "UA-wxapp",
+	"projectname": "UA-manager-wxapp",
 	"description": "尿酸安全小程序",
-	"appid": "wxff8cb83c53a6c18a",
+	"appid": "wx374c5728453814b7",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,

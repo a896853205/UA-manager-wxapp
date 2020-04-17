@@ -8,19 +8,19 @@ import Chart from 'taro-echarts';
 
 import './analysis.css';
 
-interface IMeasure {
+interface Imeasure {
   measureText: string;
   measureType: string;
 }
-interface IStatus {
-  measure: IMeasure;
+interface Istatus {
+  measure: Imeasure;
 }
 
 const TIME_RANGE = ['过去一周', '过去一个月'];
 
 const Analysis = () => {
   const [timeSpanIndex, setTimeSpanIndex] = useState(0);
-  const { measureType } = useSelector<IStatus, IMeasure>(
+  const { measureType } = useSelector<Istatus, Imeasure>(
     (state) => state.measure
   );
 
@@ -47,7 +47,7 @@ const Analysis = () => {
         <View className="analysis-box">
           <View className="analysis-title">尿酸</View>
           <Chart
-            chartId={'1'}
+            chartId=""
             option={{
               series: [
                 {
@@ -84,26 +84,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -115,7 +115,7 @@ const Analysis = () => {
         <View className="analysis-box">
           <View className="analysis-title">尿酸</View>
           <Chart
-            chartId={'1'}
+            chartId=""
             option={{
               series: [
                 {
@@ -152,26 +152,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -179,7 +179,7 @@ const Analysis = () => {
           </View>
           <View className="analysis-title">血脂</View>
           <Chart
-            chartId={'1'}
+            chartId=""
             option={{
               series: [
                 {
@@ -216,26 +216,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -243,7 +243,7 @@ const Analysis = () => {
           </View>
           <View className="analysis-title">血糖</View>
           <Chart
-            chartId={'1'}
+            chartId=""
             option={{
               series: [
                 {
@@ -280,26 +280,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#E93B3D" className="tag" />
+              <AtIcon value="tag" color="#6190e8" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
