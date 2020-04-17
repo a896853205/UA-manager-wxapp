@@ -38,7 +38,7 @@ const Me = () => {
           <View className="item-title">健康档案</View>
           <View className="item-list">
             <View className="item-cell">
-              <AtIcon value="bookmark" size="40" color="#6190e8" />
+              <AtIcon value="bookmark" size="40" color="#E93B3D" />
               <View className="item-name">我的档案</View>
             </View>
           </View>
@@ -47,7 +47,7 @@ const Me = () => {
           <View className="item-title">我的亲友</View>
           <View className="item-list">
             <View className="item-cell">
-              <AtIcon value="list" size="40" color="#6190e8" />
+              <AtIcon value="list" size="40" color="#E93B3D" />
               <View className="item-name">亲友列表</View>
             </View>
           </View>

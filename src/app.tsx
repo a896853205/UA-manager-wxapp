@@ -6,7 +6,7 @@ import Authority from './pages/authority/index';
 
 import configStore from './store';
 
-import 'taro-ui/dist/style/index.scss';
+import './custom-variables.scss';
 import './app.css';
 
 // 如果需要在 h5 环境中开启 React Devtools
@@ -28,20 +28,17 @@ class App extends Component {
   config: Config = {
     pages: [
       'pages/authority/index',
-      'pages/login/index',
       'pages/index/index',
-      'pages/aim/index',
       'pages/data-detail/index',
       'pages/device/index',
       'pages/news-detail/index',
-      'pages/remind/index',
       'pages/sync-data/index',
       'pages/save-data/index',
       'pages/save-remind/index',
     ],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#6190e8',
+      navigationBarBackgroundColor: '#E93B3D',
       navigationBarTitleText: '尿酸管理',
       navigationBarTextStyle: 'white',
     },

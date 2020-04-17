@@ -84,26 +84,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -152,26 +152,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -216,26 +216,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>
@@ -280,26 +280,26 @@ const Analysis = () => {
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 总共<Text className="blue-num">20</Text>次
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 连续高位<Text className="blue-num">6</Text>次
               </Text>
             </View>
 
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最高<Text className="blue-num">652</Text>mmol/L
               </Text>
             </View>
             <View className="analysis-describe-item">
-              <AtIcon value="tag" color="#6190e8" className="tag" />
+              <AtIcon value="tag" color="#E93B3D" className="tag" />
               <Text className="tag">
                 最长高位<Text className="blue-num">6</Text>天
               </Text>

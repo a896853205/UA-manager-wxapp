@@ -8,21 +8,19 @@ import './preview.css';
 
 // icon
 import refresh from '../../../../assets/icon/refresh.png';
-import aim from '../../../../assets/icon/aim.png';
 import bar from '../../../../assets/icon/bar.png';
-import clock from '../../../../assets/icon/clock.png';
 import config from '../../../../assets/icon/config.png';
 import newspaper from '../../../../assets/icon/newspaper.png';
 
-interface IMeasure {
+interface Imeasure {
   measureType: string;
 }
-interface IStatus {
-  measure: IMeasure;
+interface Istatus {
+  measure: Imeasure;
 }
 
 const Preview = () => {
-  const { measureType } = useSelector<IStatus, IMeasure>(
+  const { measureType } = useSelector<Istatus, Imeasure>(
     (state) => state.measure
   );
 
@@ -85,12 +83,6 @@ const Preview = () => {
             case 1:
               Taro.navigateTo({ url: '/pages/data-detail/index' });
               break;
-            case 2:
-              Taro.navigateTo({ url: '/pages/remind/index' });
-              break;
-            case 3:
-              Taro.navigateTo({ url: '/pages/aim/index' });
-              break;
             default:
           }
         }}
@@ -103,14 +95,6 @@ const Preview = () => {
           {
             image: bar,
             value: '数据详情',
-          },
-          {
-            image: clock,
-            value: '提醒设置',
-          },
-          {
-            image: aim,
-            value: '目标设置',
           },
           {
             image: newspaper,

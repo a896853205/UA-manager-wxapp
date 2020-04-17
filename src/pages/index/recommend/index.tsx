@@ -33,13 +33,13 @@ const Recommend = () => {
     <View className="recommed-box">
       <View className="recommed-top-box">
         <View className="recommend-title">
-          <AtIcon value="streaming" color="#6190e8" />
+          <AtIcon value="streaming" color="#E93B3D" />
           <Text className="recommend-title-text">精选专题</Text>
         </View>
         <Swiper
           className="swiper"
           indicatorColor="#ddd"
-          indicatorActiveColor="#6190e8"
+          indicatorActiveColor="#E93B3D"
           circular
           indicatorDots
           autoplay

@@ -23,7 +23,7 @@ const Authority = () => {
       <Swiper
         className="swiper"
         indicatorColor="#ddd"
-        indicatorActiveColor="#6190e8"
+        indicatorActiveColor="#E93B3D"
         circular
         indicatorDots
         autoplay
@@ -67,17 +67,7 @@ const Authority = () => {
           });
         }}
       >
-        我是患者
-      </View>
-      <View
-        className="btn secondary"
-        onClick={() => {
-          Taro.redirectTo({
-            url: '../../pages/login/index',
-          });
-        }}
-      >
-        我是医生
+        我要登录
       </View>
     </View>
   );
