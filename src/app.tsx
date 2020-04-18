@@ -29,7 +29,6 @@ class App extends Component {
     pages: [
       'pages/authority/index',
       'pages/index/index',
-      'pages/data-detail/index',
       'pages/device/index',
       'pages/news-detail/index',
       'pages/sync-data/index',

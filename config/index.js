@@ -58,7 +58,6 @@ const config = {
     },
   },
   h5: {
-    esnextModules: ['taro-echarts'],
     publicPath: '/',
     staticDirectory: 'static',
     module: {
@@ -80,14 +79,6 @@ const config = {
     },
   },
   copy: {
-    patterns: [
-      {
-        from: 'node_modules/taro-echarts/components/ec-canvas/',
-        to: 'dist/npm/taro-echarts/components/ec-canvas',
-        ignore: ['ec-canvas.js', 'wx-canvas.js'],
-      },
-      { from: 'sitemap.json', to: '/dist/weapp/sitemap.json' },
-    ],
     options: {},
   },
 };

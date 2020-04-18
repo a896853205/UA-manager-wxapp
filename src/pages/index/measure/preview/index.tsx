@@ -8,7 +8,6 @@ import './preview.css';
 
 // icon
 import refresh from '../../../../assets/icon/refresh.png';
-import bar from '../../../../assets/icon/bar.png';
 import config from '../../../../assets/icon/config.png';
 import doctor from '../../../../assets/icon/doctor.png';
 
@@ -79,13 +78,13 @@ const Preview = () => {
             case 0:
               Taro.navigateTo({ url: '/pages/sync-data/index' });
               break;
-            case 1:
-              Taro.navigateTo({ url: '/pages/data-detail/index' });
-              break;
-            case 2:
+            // case 1:
+            //   Taro.navigateTo({ url: '/pages/data-detail/index' });
+            //   break;
+            case 3:
               // Taro.navigateTo({ url: '/pages/data-detail/index' });
               break;
-            case 3:
+            case 2:
               Taro.navigateTo({ url: '/pages/doctor/index' });
               break;
             default:
@@ -97,10 +96,10 @@ const Preview = () => {
             value: '同步数据',
           },
 
-          {
-            image: bar,
-            value: '数据详情',
-          },
+          // {
+          //   image: bar,
+          //   value: '数据详情',
+          // },
           {
             image: config,
             value: '设备设置',

@@ -97,6 +97,42 @@ const Recommend = () => {
         >
           <AtListItem title="李四" arrow="right" note="电话: 1599816589" />
         </AtSwipeAction>
+        <AtSwipeAction
+          options={[
+            {
+              text: '选择',
+              style: {
+                backgroundColor: '#6190E8',
+              },
+            },
+            {
+              text: '修改',
+              style: {
+                backgroundColor: '#FF4949',
+              },
+            },
+          ]}
+        >
+          <AtListItem title="孙四" arrow="right" note="电话: 1575234586" />
+        </AtSwipeAction>
+        <AtSwipeAction
+          options={[
+            {
+              text: '选择',
+              style: {
+                backgroundColor: '#6190E8',
+              },
+            },
+            {
+              text: '修改',
+              style: {
+                backgroundColor: '#FF4949',
+              },
+            },
+          ]}
+        >
+          <AtListItem title="赵四" arrow="right" note="电话: 1575213458" />
+        </AtSwipeAction>
       </AtList>
       <AtButton
         full
