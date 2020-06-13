@@ -27,14 +27,14 @@
   font-size: 1.5rem;
 }
 
-.measure-joint-preview > .row {
+.measure-triple-preview > .row {
   display: flex;
   justify-content: space-around;
   align-items: baseline;
   border-bottom: 1px solid #ddd;
 }
 
-.measure-joint-preview > .row:first-child {
+.measure-triple-preview > .row:first-child {
   text-align: right;
   display: block;
   color: #666;

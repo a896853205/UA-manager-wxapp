@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev:weapp",
+			"problemMatcher": [],
+			"label": "npm: dev:weapp",
+			"detail": "npm run build:weapp -- --watch"
+		}
+	]
+}

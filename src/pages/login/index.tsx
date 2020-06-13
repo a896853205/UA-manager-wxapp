@@ -1,19 +1,46 @@
-import Taro, { memo } from '@tarojs/taro';
+import Taro, { memo, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtInput, AtForm, AtButton } from 'taro-ui';
+import md5 from 'md5';
+
+import { AUTHORIZE } from '../../constants/api-constants';
+import http from '../../util/http';
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const authorize = () => {
+    http({
+      url: AUTHORIZE,
+      method: 'POST',
+      data: {
+        username,
+        password: md5(password),
+      },
+    }).then((res) => {
+      if (res.statusCode === 500) {
+        console.log('密码错误');
+      } else if (res.statusCode === 200) {
+        Taro.setStorageSync('token', res.data.data.token);
+        Taro.redirectTo({
+          url: '../../pages/index/index',
+        });
+      }
+    });
+  };
+
   return (
     <View>
       <AtForm>
         <AtInput
           name="value2"
           title="账号"
-          type="number"
+          type="text"
           placeholder="请输入社区志愿者账号"
           value=""
           onChange={(e) => {
-            console.log(e);
+            setUsername(`${e}`);
           }}
         />
         <AtInput
@@ -23,16 +50,14 @@ const Login = () => {
           placeholder="请输入密码"
           value=""
           onChange={(e) => {
-            console.log(e);
+            setPassword(`${e}`);
           }}
         />
         <AtButton
           full
           type="primary"
           onClick={() => {
-            Taro.redirectTo({
-              url: '../../pages/index/index',
-            });
+            authorize();
           }}
         >
           登录

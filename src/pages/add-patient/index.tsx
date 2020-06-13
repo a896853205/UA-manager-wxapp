@@ -1,15 +1,52 @@
-import Taro, { memo } from '@tarojs/taro';
+import Taro, { memo, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtInput, AtButton } from 'taro-ui';
 
+import { PATIENT_SAVE } from '../../constants/api-constants';
+import http from '../../util/http';
+
 const AddPatient = () => {
-  /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [identity, setIdentity] = useState('');
+  const [address, setAddress] = useState('');
+  const [RelativeName, setRelativeName] = useState('');
+  const [relativeRelation, setRelativeRelation] = useState('');
+  const [RelativePhone, setRelativePhone] = useState('');
+
+  const submit = () => {
+    http({
+      url: PATIENT_SAVE,
+      method: 'POST',
+      data: {
+        name: name,
+        gender: 1,
+        identify: identity,
+        phone: phone,
+        address: address,
+        relative_name: RelativeName,
+        relative_relation: relativeRelation,
+        relative_phone: RelativePhone,
+      },
+    }).then((res) => {
+      if (res.statusCode === 500) {
+        console.log('增加失败');
+      } else if (res.statusCode === 200) {
+        Taro.redirectTo({
+          url: '../../pages/index/index',
+        });
+      }
+    });
+  };
+  // name
+  // gender
+  // identify
+  // phone
+  // address
+  // relative_name
+  // relative_relation
+  // relative_phone
+
   return (
     <View>
       <AtInput
@@ -19,7 +56,7 @@ const AddPatient = () => {
         placeholder="患者姓名"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setName(`${e}`);
         }}
       />
       <AtInput
@@ -29,7 +66,7 @@ const AddPatient = () => {
         placeholder="患者本人手机号"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setPhone(`${e}`);
         }}
       />
       <AtInput
@@ -39,7 +76,7 @@ const AddPatient = () => {
         placeholder="患者本人身份证号"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setIdentity(`${e}`);
         }}
       />
       <AtInput
@@ -49,7 +86,7 @@ const AddPatient = () => {
         placeholder="患者本人家庭住址"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setAddress(`${e}`);
         }}
       />
       <AtInput
@@ -59,7 +96,7 @@ const AddPatient = () => {
         placeholder="患者的亲属姓名"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setRelativeName(`${e}`);
         }}
       />
       <AtInput
@@ -69,7 +106,7 @@ const AddPatient = () => {
         placeholder="亲属与患者关系"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setRelativeRelation(`${e}`);
         }}
       />
       <AtInput
@@ -79,10 +116,11 @@ const AddPatient = () => {
         placeholder="亲属手机号"
         value=""
         onChange={(e) => {
-          console.log(e);
+          setRelativePhone(`${e}`);
         }}
       />
-      <AtButton full type="primary">
+
+      <AtButton full type="primary" onClick={submit}>
         保存
       </AtButton>
     </View>

@@ -1,6 +1,9 @@
-import Taro, { memo, useEffect } from '@tarojs/taro';
+import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtList, AtSwipeAction, AtListItem, AtButton } from 'taro-ui';
+
+import http from '../../../util/http';
+import { PATIENT_LIST } from '../../../constants/api-constants';
 
 // #region 书写注意
 //
@@ -21,118 +24,57 @@ interface Recommend {
 }
 
 const Recommend = () => {
-  /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
+  const [patientList, setPatientList] = useState<any>([]);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
       title: '患者管理',
+    });
+    http({
+      url: PATIENT_LIST,
+      method: 'GET',
+    }).then((res) => {
+      if (res.statusCode === 500) {
+        console.log('获取列表失败');
+      } else if (res.statusCode === 200) {
+        setPatientList(res.data.data);
+
+        if (res.data.data[0]) {
+          Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+        }
+      }
     });
   }, []);
 
   return (
     <View>
       <AtList>
-        <AtSwipeAction
-          options={[
-            {
-              text: '选择',
-              style: {
-                backgroundColor: '#6190E8',
+        {patientList.map((patientItem) => (
+          <AtSwipeAction
+            key={patientItem.uuid}
+            options={[
+              {
+                text: '选择',
+                style: {
+                  backgroundColor: '#6190E8',
+                },
               },
-            },
-            {
-              text: '修改',
-              style: {
-                backgroundColor: '#FF4949',
+              {
+                text: '修改',
+                style: {
+                  backgroundColor: '#FF4949',
+                },
               },
-            },
-          ]}
-        >
-          <AtListItem
-            title="钱程"
-            arrow="right"
-            note="电话: 15998133472"
-            iconInfo={{ value: 'check-circle', color: '#999' }}
-          />
-        </AtSwipeAction>
-        <AtSwipeAction
-          options={[
-            {
-              text: '选择',
-              style: {
-                backgroundColor: '#6190E8',
-              },
-            },
-            {
-              text: '修改',
-              style: {
-                backgroundColor: '#FF4949',
-              },
-            },
-          ]}
-        >
-          <AtListItem title="张三" arrow="right" note="电话: -" />
-        </AtSwipeAction>
-        <AtSwipeAction
-          options={[
-            {
-              text: '选择',
-              style: {
-                backgroundColor: '#6190E8',
-              },
-            },
-            {
-              text: '修改',
-              style: {
-                backgroundColor: '#FF4949',
-              },
-            },
-          ]}
-        >
-          <AtListItem title="李四" arrow="right" note="电话: 1599816589" />
-        </AtSwipeAction>
-        <AtSwipeAction
-          options={[
-            {
-              text: '选择',
-              style: {
-                backgroundColor: '#6190E8',
-              },
-            },
-            {
-              text: '修改',
-              style: {
-                backgroundColor: '#FF4949',
-              },
-            },
-          ]}
-        >
-          <AtListItem title="孙四" arrow="right" note="电话: 1575234586" />
-        </AtSwipeAction>
-        <AtSwipeAction
-          options={[
-            {
-              text: '选择',
-              style: {
-                backgroundColor: '#6190E8',
-              },
-            },
-            {
-              text: '修改',
-              style: {
-                backgroundColor: '#FF4949',
-              },
-            },
-          ]}
-        >
-          <AtListItem title="赵四" arrow="right" note="电话: 1575213458" />
-        </AtSwipeAction>
+            ]}
+          >
+            <AtListItem
+              title={patientItem.name}
+              arrow="right"
+              note={`电话: ${patientItem.phone}`}
+              iconInfo={{ value: 'check-circle', color: '#999' }}
+            />
+          </AtSwipeAction>
+        ))}
       </AtList>
       <AtButton
         full

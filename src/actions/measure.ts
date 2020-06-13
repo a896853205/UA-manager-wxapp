@@ -6,7 +6,7 @@ export const changeMeasureType = (measureType) => {
     case 'single':
       measureText = '尿酸单项';
       break;
-    case 'joint':
+    case 'triple':
       measureText = '三联检测';
       break;
     default:

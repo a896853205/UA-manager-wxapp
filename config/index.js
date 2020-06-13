@@ -79,7 +79,9 @@ const config = {
     },
   },
   copy: {
-    options: {},
+    options: {
+      ignore: ['*.test.ts']
+    },
   },
 };
 

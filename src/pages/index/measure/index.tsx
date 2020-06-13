@@ -40,7 +40,7 @@ const Measure = () => {
       case 0:
         break;
       case 1:
-        measureType = 'joint';
+        measureType = 'triple';
         break;
     }
 

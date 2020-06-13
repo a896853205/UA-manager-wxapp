@@ -52,7 +52,7 @@ const SaveData = () => {
           </AtButton>
         </View>
       ) : null}
-      {measureType === 'joint' ? (
+      {measureType === 'triple' ? (
         <View>
           <AtInput
             name="UA"

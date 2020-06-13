@@ -1,12 +1,13 @@
-import Taro, { memo } from '@tarojs/taro';
+import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
-
-// 样式
 import { AtGrid } from 'taro-ui';
-import './preview.css';
+
+import { MEASURE_LATEST } from '../../../../constants/api-constants';
+import http from '../../../../util/http';
 
 // icon
+import './preview.css';
 import refresh from '../../../../assets/icon/refresh.png';
 import config from '../../../../assets/icon/config.png';
 import doctor from '../../../../assets/icon/doctor.png';
@@ -22,28 +23,57 @@ const Preview = () => {
   const { measureType } = useSelector<Istatus, Imeasure>(
     (state) => state.measure
   );
+  const activePatientUuid = Taro.getStorageSync('activePatient');
+  const [uric, setUric] = useState(0);
+
+  const [TUric, setTUric] = useState(0);
+  const [fat, setFat] = useState(0);
+  const [sugar, setSugar] = useState(0);
+
+  useEffect(() => {
+    http({
+      url: MEASURE_LATEST,
+      method: 'GET',
+      data: {
+        uuid: Taro.getStorageSync('activePatient'),
+        type: measureType,
+      },
+    }).then((res) => {
+      if (res.statusCode === 500) {
+        console.log('获取基本数据失败');
+      } else if (res.statusCode === 200) {
+        if (measureType === 'single') {
+          setUric(res.data.data.uric);
+        } else if (measureType === 'triple') {
+          setTUric(res.data.data.uric);
+          setFat(res.data.data.fat);
+          setSugar(res.data.data.sugar);
+        }
+      }
+    });
+  }, [activePatientUuid, measureType]);
 
   return (
     <View className="page">
-      {/* TODO: 根据redux中的值展示单项还是多项 */}
       {measureType === 'single' ? (
         <View className="value-preview-box">
           <View className="measure-preview">
-            351<Text className="measure-unit">mmol/L</Text>
+            {uric}
+            <Text className="measure-unit">umol/L</Text>
           </View>
           <View className="measure-description">
             连续<Text className="day">10</Text>天高于目标值
           </View>
         </View>
       ) : null}
-      {measureType === 'joint' ? (
-        <View className="value-preview-box measure-joint-preview">
+      {measureType === 'triple' ? (
+        <View className="value-preview-box measure-triple-preview">
           <View className="row">连续高位</View>
           <View className="row">
             <Text className="measure-project">尿酸</Text>
             <Text className="measure-value">
-              <Text className="value-num">351</Text>
-              <Text className="measure-unit">mmol/L</Text>
+              <Text className="value-num">{TUric}</Text>
+              <Text className="measure-unit">umol/L</Text>
             </Text>
             <Text>
               <Text className="day">10</Text>天
@@ -52,7 +82,7 @@ const Preview = () => {
           <View className="row">
             <Text className="measure-project">血脂</Text>
             <Text className="measure-value">
-              <Text className="value-num">351</Text>
+              <Text className="value-num">{fat}</Text>
               <Text className="measure-unit">mmol/L</Text>
             </Text>
             <Text>
@@ -62,7 +92,7 @@ const Preview = () => {
           <View className="row">
             <Text className="measure-project">血糖</Text>
             <Text className="measure-value">
-              <Text className="value-num">352</Text>
+              <Text className="value-num">{sugar}</Text>
               <Text className="measure-unit">mmol/L</Text>
             </Text>
             <Text>
@@ -78,9 +108,9 @@ const Preview = () => {
             case 0:
               Taro.navigateTo({ url: '/pages/sync-data/index' });
               break;
-            // case 1:
-            //   Taro.navigateTo({ url: '/pages/data-detail/index' });
-            //   break;
+            case 1:
+              Taro.navigateTo({ url: '/pages/device/index' });
+              break;
             case 3:
               // Taro.navigateTo({ url: '/pages/data-detail/index' });
               break;
