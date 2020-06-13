@@ -41,7 +41,7 @@ const hex2Data = (data: string): UXData => {
   );
 
   // 时间转换时间戳
-  const timestamp: number = time.setHours(time.getHours()) / 1000;
+  const timestamp: number = time.setHours(time.getHours());
 
   // 输出对象
   return {
