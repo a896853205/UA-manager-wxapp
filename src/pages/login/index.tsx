@@ -12,33 +12,38 @@ const Login = () => {
   const [loginLoading, setLoginLoading] = useState(false);
 
   const authorize = () => {
-    if (!loginLoading) {
-      setLoginLoading(true);
 
-      http({
-        url: AUTHORIZE,
-        method: 'POST',
-        data: {
-          username,
-          password: md5(password),
-        },
-      }).then((res) => {
-        if (res.statusCode === 500) {
-          Taro.atMessage({
-            message: '密码错误',
-            type: 'error',
-          });
-        } else if (res.statusCode === 200) {
-          Taro.setStorageSync('token', res.data.data.token);
+    (async () => {
+      if (!loginLoading) {
+        setLoginLoading(true);
 
-          Taro.redirectTo({
-            url: '../../pages/index/index',
-          });
-        }
+        await http({
+          url: AUTHORIZE,
+          method: 'POST',
+          data: {
+            username,
+            password: md5(password),
+          },
+        }).then((res) => {
+          if (res.statusCode === 500) {
+            Taro.atMessage({
+              message: '密码错误',
+              type: 'error',
+            });
+          } else if (res.statusCode === 200) {
+            console.log(1)
+            Taro.setStorageSync('token', res.data.data.token);
 
-        setLoginLoading(false);
-      });
-    }
+            Taro.redirectTo({
+              url: '../../pages/index/index',
+            });
+          }
+
+          // setLoginLoading(false);
+        });
+      }
+      setLoginLoading(false);
+    })();
   };
 
   return (
