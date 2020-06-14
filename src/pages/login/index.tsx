@@ -12,7 +12,6 @@ const Login = () => {
   const [loginLoading, setLoginLoading] = useState(false);
 
   const authorize = () => {
-
     if (!loginLoading) {
       setLoginLoading(true);
 
@@ -26,22 +25,20 @@ const Login = () => {
       }).then((res) => {
         if (res.statusCode === 500) {
           Taro.atMessage({
-            'message': '密码错误',
-            'type': 'error',
+            message: '密码错误',
+            type: 'error',
           });
-          console.log('密码错误');
-          setLoginLoading(false);
         } else if (res.statusCode === 200) {
           Taro.setStorageSync('token', res.data.data.token);
+
           Taro.redirectTo({
             url: '../../pages/index/index',
           });
-          setLoginLoading(false);
         }
+
+        setLoginLoading(false);
       });
-
     }
-
   };
 
   return (
