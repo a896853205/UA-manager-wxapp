@@ -1,6 +1,15 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
-import { View, Button, Text } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+import { AtButton } from 'taro-ui';
 
+import {
+  inArray,
+  onBluetoothDeviceFound,
+  openBluetoothAdapter,
+  hex2buffer,
+  buf2hex,
+  stopBluetoothDevicesDiscovery
+} from './util/blue-tooth';
 import { UXSingleData } from './util/data2UXData';
 import http from '../../util/http';
 import { MEASURE_UPDATE } from '../../constants/api-constants';
@@ -12,31 +21,6 @@ const TXD = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
 const RXD = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
 
 const START = '7b00FF7d0011';
-function inArray(arr, key, val) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][key] === val) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-function hex2buffer(hex) {
-  const typedArray = new Uint8Array(
-    hex.match(/[\da-f]{2}/gi).map(function (h) {
-      return parseInt(h, 16);
-    })
-  );
-
-  return typedArray.buffer;
-}
-
-// ArrayBuffer转16进度字符串示例
-function buf2hex(buffer) {
-  return Array.prototype.map
-    .call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2))
-    .join('');
-}
 
 const Device = () => {
   const [discoveryStarted, setDiscoveryStarted] = useState(false);
@@ -72,27 +56,6 @@ const Device = () => {
     });
   };
 
-  // 监听找到设备函数
-  const onBluetoothDeviceFound = () => {
-    Taro.onBluetoothDeviceFound((res) => {
-      console.log('onBluetoothDeviceFound', res);
-      res.devices.forEach((device) => {
-        if (!device.name && !device.localName) {
-          return;
-        }
-
-        const idx = inArray(devices, 'deviceId', device.deviceId);
-
-        if (idx === -1) {
-          devices[devices.length] = device;
-        } else {
-          devices[idx] = device;
-        }
-        setDevices([...devices]);
-      });
-    });
-  };
-
   // 开始查找蓝牙设备
   const startBluetoothDevicesDiscovery = () => {
     if (discoveryStarted) {
@@ -102,35 +65,24 @@ const Device = () => {
     // 搜索蓝牙设备
     Taro.startBluetoothDevicesDiscovery({
       allowDuplicatesKey: true,
-      success: (res) => {
-        console.log('startBluetoothDevicesDiscovery success', res);
-        onBluetoothDeviceFound();
+      success: async () => {
+        const res = await onBluetoothDeviceFound();
+        res.devices.forEach((device) => {
+          if (!device.name && !device.localName) {
+            return;
+          }
+
+          const idx = inArray(devices, 'deviceId', device.deviceId);
+
+          if (idx === -1) {
+            devices[devices.length] = device;
+          } else {
+            devices[idx] = device;
+          }
+          setDevices([...devices]);
+        });
       },
     });
-  };
-
-  // 蓝牙功能开启
-  const openBluetoothAdapter = () => {
-    Taro.openBluetoothAdapter({
-      success: () => {
-        startBluetoothDevicesDiscovery();
-      },
-      fail: (res) => {
-        if (res.errCode === 10001) {
-          Taro.onBluetoothAdapterStateChange((res2) => {
-            console.log('onBluetoothAdapterStateChange', res2);
-            if (res2.available) {
-              startBluetoothDevicesDiscovery();
-            }
-          });
-        }
-      },
-    });
-  };
-
-  // 停止蓝牙扫描
-  const stopBluetoothDevicesDiscovery = () => {
-    Taro.stopBluetoothDevicesDiscovery();
   };
 
   // 写数据
@@ -158,12 +110,10 @@ const Device = () => {
 
   const getBLEDeviceCharacteristics = async (_deviceId, serviceId) => {
     console.log(_deviceId, serviceId);
-    const res = await Taro.getBLEDeviceCharacteristics({
+    await Taro.getBLEDeviceCharacteristics({
       deviceId: _deviceId,
       serviceId: serviceId,
     });
-
-    console.log('chsList', res);
 
     // 监听RXD
     Taro.notifyBLECharacteristicValueChange({
@@ -247,12 +197,19 @@ const Device = () => {
 
   return (
     <View>
-      <Button onClick={openBluetoothAdapter}>开始扫描</Button>
-      <Button onClick={stopBluetoothDevicesDiscovery}>停止扫描</Button>
+      <AtButton
+        onClick={async () => {
+          await openBluetoothAdapter();
+          startBluetoothDevicesDiscovery();
+        }}
+      >
+        开始扫描
+      </AtButton>
+      <AtButton onClick={stopBluetoothDevicesDiscovery}>停止扫描</AtButton>
       <View>已发现 {devices.length} 个外围设备：</View>
       {devices.map((item) => {
         return (
-          <Button
+          <AtButton
             key={item.deviceId}
             onClick={() => createBLEConnection(item.deviceId, item.name)}
           >
@@ -264,36 +221,36 @@ const Device = () => {
             <Text style="font-size: 10px">
               Service数量: {item.advertisServiceUUIDs.length}
             </Text>
-          </Button>
+          </AtButton>
         );
       })}
       <View>
         <Text>已连接到 {name}</Text>
         <View>
-          <Button
+          <AtButton
             onClick={() => {
               writeBLECharacteristicValue(START);
             }}
           >
             开始连接
-          </Button>
-          <Button
+          </AtButton>
+          <AtButton
             onClick={() => {
               writeBLECharacteristicValue('7b00A0017d');
               setUploadType(1);
             }}
           >
             获取1条数据
-          </Button>
-          <Button
+          </AtButton>
+          <AtButton
             onClick={() => {
               writeBLECharacteristicValue('7b00A0057d');
               setUploadType(5);
             }}
           >
             获取5条数据
-          </Button>
-          <Button onClick={closeBLEConnection}>断开连接</Button>
+          </AtButton>
+          <AtButton onClick={closeBLEConnection}>断开连接</AtButton>
         </View>
       </View>
     </View>
