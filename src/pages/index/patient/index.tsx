@@ -62,7 +62,7 @@ const Recommend = () => {
         isOpened={getDataLoading}
         hasMask
         status="loading"
-        text="{患者信息加载中...}"
+        text="患者信息加载中..."
       />
       <AtList>
         {patientList.map((patientItem) => (

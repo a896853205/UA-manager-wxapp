@@ -64,7 +64,7 @@ const Preview = () => {
         isOpened={getDataLoading}
         hasMask
         status="loading"
-        text="{测量数据加载中...}"
+        text="测量数据加载中..."
       />
       {measureType === 'single' ? (
         <View className="value-preview-box">
