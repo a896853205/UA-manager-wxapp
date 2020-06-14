@@ -1,7 +1,7 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
-import { AtGrid } from 'taro-ui';
+import { AtGrid, AtToast } from 'taro-ui';
 
 import { MEASURE_LATEST } from '../../../../constants/api-constants';
 import http from '../../../../util/http';
@@ -29,16 +29,20 @@ const Preview = () => {
   const [TUric, setTUric] = useState(0);
   const [fat, setFat] = useState(0);
   const [sugar, setSugar] = useState(0);
+  const [getDataLoading, setGetDataLoading] = useState(true);
 
   useEffect(() => {
-    http({
-      url: MEASURE_LATEST,
-      method: 'GET',
-      data: {
-        uuid: Taro.getStorageSync('activePatient'),
-        type: measureType,
-      },
-    }).then((res) => {
+    (async () => {
+      setGetDataLoading(true);
+      const res = await http({
+        url: MEASURE_LATEST,
+        method: 'GET',
+        data: {
+          uuid: Taro.getStorageSync('activePatient'),
+          type: measureType,
+        },
+      });
+
       if (res.statusCode === 500) {
         console.log('获取基本数据失败');
       } else if (res.statusCode === 200) {
@@ -50,11 +54,18 @@ const Preview = () => {
           setSugar(res.data.data.sugar);
         }
       }
-    });
+      setGetDataLoading(false);
+    })();
   }, [activePatientUuid, measureType]);
 
   return (
     <View className="page">
+      <AtToast
+        isOpened={getDataLoading}
+        hasMask
+        status="loading"
+        text="{测量数据加载中...}"
+      />
       {measureType === 'single' ? (
         <View className="value-preview-box">
           <View className="measure-preview">
