@@ -25,39 +25,45 @@ interface Recommend {
 
 const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
-  const [getDataLoading, setGetDataLoading] = useState(false);
+  const [getDataLoading, setGetDataLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-
-      Taro.setNavigationBarTitle({
-        title: '患者管理',
-      });
-
       setGetDataLoading(true);
 
-      await http({
+      const res = await http({
         url: PATIENT_LIST,
         method: 'GET',
-      }).then((res) => {
-        if (res.statusCode === 500) {
-          console.log('获取列表失败');
-        } else if (res.statusCode === 200) {
-          setPatientList(res.data.data);
-
-          if (res.data.data[0]) {
-            Taro.setStorageSync('activePatient', res.data.data[0].uuid);
-          }
-        }
       });
+
+      if (res.statusCode === 500) {
+        console.log('获取列表失败');
+      } else if (res.statusCode === 200) {
+        setPatientList(res.data.data);
+
+        if (res.data.data[0]) {
+          Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+        }
+      }
 
       setGetDataLoading(false);
     })();
   }, []);
 
+  useEffect(() => {
+    Taro.setNavigationBarTitle({
+      title: '患者管理',
+    });
+  }, []);
+
   return (
     <View>
-      <AtToast isOpened={getDataLoading} hasMask text="{患者信息加载中...}" icon="loading-3"></AtToast>
+      <AtToast
+        isOpened={getDataLoading}
+        hasMask
+        status="loading"
+        text="{患者信息加载中...}"
+      />
       <AtList>
         {patientList.map((patientItem) => (
           <AtSwipeAction

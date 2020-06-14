@@ -11,39 +11,34 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
 
-  const authorize = () => {
+  const authorize = async () => {
+    if (!loginLoading) {
+      setLoginLoading(true);
 
-    (async () => {
-      if (!loginLoading) {
-        setLoginLoading(true);
+      const res = await http({
+        url: AUTHORIZE,
+        method: 'POST',
+        data: {
+          username,
+          password: md5(password),
+        },
+      });
 
-        await http({
-          url: AUTHORIZE,
-          method: 'POST',
-          data: {
-            username,
-            password: md5(password),
-          },
-        }).then((res) => {
-          if (res.statusCode === 500) {
-            Taro.atMessage({
-              message: '密码错误',
-              type: 'error',
-            });
-          } else if (res.statusCode === 200) {
-            console.log(1)
-            Taro.setStorageSync('token', res.data.data.token);
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '密码错误',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        Taro.setStorageSync('token', res.data.data.token);
 
-            Taro.redirectTo({
-              url: '../../pages/index/index',
-            });
-          }
-
-          // setLoginLoading(false);
+        Taro.redirectTo({
+          url: '../../pages/index/index',
         });
       }
+
       setLoginLoading(false);
-    })();
+    }
   };
 
   return (
@@ -74,9 +69,7 @@ const Login = () => {
           full
           type="primary"
           loading={loginLoading}
-          onClick={() => {
-            authorize();
-          }}
+          onClick={authorize}
         >
           登录
         </AtButton>
