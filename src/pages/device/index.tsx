@@ -1,6 +1,6 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
+import { AtButton, AtMessage } from 'taro-ui';
 
 import {
   inArray,
@@ -8,7 +8,7 @@ import {
   openBluetoothAdapter,
   hex2buffer,
   buf2hex,
-  stopBluetoothDevicesDiscovery
+  stopBluetoothDevicesDiscovery,
 } from './util/blue-tooth';
 import { UXSingleData } from './util/data2UXData';
 import http from '../../util/http';
@@ -30,30 +30,35 @@ const Device = () => {
 
   const [deviceId, setDeviceId] = useState('');
   const [name, setName] = useState('');
-  const [uploadTimes, setUploadTimes] = useState(0);
-  const [uploadType, setUploadType] = useState(1);
-  '1为一条,5为5条';
+  const [uploadData, setUploadData] = useState('');
+  // '1为一条,5为5条';
 
-  const submit = (uploadData: string) => {
-    http({
-      url: MEASURE_UPDATE,
-      method: 'POST',
-      data: {
-        uuid: Taro.getStorageSync('activePatient'),
-        datas: [UXSingleData(uploadData)],
-      },
-    }).then((res) => {
-      console.log(res);
-      if (res.statusCode === 500) {
-        console.log('数据提交失败');
-      } else if (res.statusCode === 200) {
-        setUploadTimes(uploadTimes + 1);
-        if (uploadTimes === uploadType) {
-          console.log('数据提交成功');
-          setUploadTimes(0);
+  const submit = (_uploadData: string) => {
+    if (_uploadData === '') {
+      Taro.atMessage({
+        message: '请先从设备获取数据',
+        type: 'error',
+      });
+    } else {
+      http({
+        url: MEASURE_UPDATE,
+        method: 'POST',
+        data: {
+          uuid: Taro.getStorageSync('activePatient'),
+          datas: [UXSingleData(_uploadData)],
+        },
+      }).then((res) => {
+        console.log(res);
+        if (res.statusCode === 500) {
+          console.log('数据提交失败');
+        } else if (res.statusCode === 200) {
+          Taro.atMessage({
+            message: '上传数据成功',
+            type: 'success',
+          });
         }
-      }
-    });
+      });
+    }
   };
 
   // 开始查找蓝牙设备
@@ -135,7 +140,7 @@ const Device = () => {
           const hex = buf2hex(characteristic.value);
 
           if (hex.length === 30) {
-            submit(hex);
+            setUploadData(hex);
           }
         });
       },
@@ -178,11 +183,11 @@ const Device = () => {
     stopBluetoothDevicesDiscovery();
   };
 
-  const closeBLEConnection = () => {
-    Taro.closeBLEConnection({
-      deviceId: deviceId,
-    });
-  };
+  // const closeBLEConnection = () => {
+  //   Taro.closeBLEConnection({
+  //     deviceId: deviceId,
+  //   });
+  // };
 
   const closeBluetoothAdapter = () => {
     Taro.closeBluetoothAdapter();
@@ -197,6 +202,7 @@ const Device = () => {
 
   return (
     <View>
+      <AtMessage />
       <AtButton
         onClick={async () => {
           await openBluetoothAdapter();
@@ -205,7 +211,7 @@ const Device = () => {
       >
         开始扫描
       </AtButton>
-      <AtButton onClick={stopBluetoothDevicesDiscovery}>停止扫描</AtButton>
+      {/* <AtButton onClick={stopBluetoothDevicesDiscovery}>停止扫描</AtButton> */}
       <View>已发现 {devices.length} 个外围设备：</View>
       {devices.map((item) => {
         return (
@@ -237,20 +243,34 @@ const Device = () => {
           <AtButton
             onClick={() => {
               writeBLECharacteristicValue('7b00A0017d');
-              setUploadType(1);
             }}
           >
             获取1条数据
           </AtButton>
-          <AtButton
+          {uploadData.length === 30
+            ? `该设备的获取到的最新数据为 ${
+                UXSingleData(uploadData).uric
+              } μmol/L`
+            : undefined}
+          {uploadData.length === 30
+            ? ` 时间:
+              ${new Date(UXSingleData(uploadData).timestamp).getFullYear()}/${
+                new Date(UXSingleData(uploadData).timestamp).getMonth() + 1
+              }/${new Date(UXSingleData(uploadData).timestamp).getDate()}
+              ${new Date(UXSingleData(uploadData).timestamp).getHours()}:
+              ${new Date(UXSingleData(uploadData).timestamp).getMinutes()}`
+            : undefined}
+
+          <AtButton onClick={() => submit(uploadData)}>上传到云端</AtButton>
+          {/* <AtButton
             onClick={() => {
-              writeBLECharacteristicValue('7b00A0057d');
               setUploadType(5);
+              writeBLECharacteristicValue('7b00A0057d');
             }}
           >
             获取5条数据
-          </AtButton>
-          <AtButton onClick={closeBLEConnection}>断开连接</AtButton>
+          </AtButton> */}
+          {/* <AtButton onClick={closeBLEConnection}>断开连接</AtButton> */}
         </View>
       </View>
     </View>
