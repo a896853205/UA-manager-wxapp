@@ -1,9 +1,19 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
-import { AtButton, AtMessage } from 'taro-ui';
+import { View, Text, Button } from '@tarojs/components';
+import {
+  AtButton,
+  AtMessage,
+  AtModal,
+  AtModalHeader,
+  AtModalContent,
+  AtModalAction,
+  AtList,
+  AtListItem,
+  AtGrid,
+  AtNoticebar,
+} from 'taro-ui';
 
 import {
-  inArray,
   onBluetoothDeviceFound,
   openBluetoothAdapter,
   hex2buffer,
@@ -31,6 +41,7 @@ const Device = () => {
   const [deviceId, setDeviceId] = useState('');
   const [name, setName] = useState('');
   const [uploadData, setUploadData] = useState('');
+  const [isShow, setIsShow] = useState(false);
   // '1为一条,5为5条';
 
   const submit = (_uploadData: string) => {
@@ -71,36 +82,40 @@ const Device = () => {
     Taro.startBluetoothDevicesDiscovery({
       allowDuplicatesKey: true,
       success: async () => {
-        const res = await onBluetoothDeviceFound();
-        res.devices.forEach((device) => {
-          if (!device.name && !device.localName) {
-            return;
-          }
+        onBluetoothDeviceFound((res) => {
+          res.devices.forEach((device) => {
+            if (!device.name && !device.localName) {
+              return;
+            }
 
-          const idx = inArray(devices, 'deviceId', device.deviceId);
+            const idx = devices.findIndex(
+              (item) => item.deviceId === device.deviceId
+            );
 
-          if (idx === -1) {
-            devices[devices.length] = device;
-          } else {
-            devices[idx] = device;
-          }
-          setDevices([...devices]);
+            // const idx = inArray(devices, 'deviceId', device.deviceId);
+
+            if (idx === -1) {
+              devices.push(device);
+            }
+
+            setDevices([...devices]);
+          });
         });
       },
     });
   };
 
   // 写数据
-  const writeBLECharacteristicValue = (hex: string) => {
+  const writeBLECharacteristicValue = (_deviceId: string, hex: string) => {
     // 16进制转buffer
     const buffer = hex2buffer(hex);
 
     console.log(
-      `向设备: ${deviceId}的服务: ${SERVICE_ID}的TXD特征值: ${TXD}写入: ${hex}`
+      `向设备: ${_deviceId}的服务: ${SERVICE_ID}的TXD特征值: ${TXD}写入: ${hex}`
     );
 
     Taro.writeBLECharacteristicValue({
-      deviceId: deviceId,
+      deviceId: _deviceId,
       serviceId: SERVICE_ID,
       characteristicId: TXD,
       value: buffer,
@@ -139,6 +154,10 @@ const Device = () => {
 
           const hex = buf2hex(characteristic.value);
 
+          if (hex === '7b01ff007df8') {
+            writeBLECharacteristicValue(_deviceId, '7b00A0017d');
+          }
+
           if (hex.length === 30) {
             setUploadData(hex);
           }
@@ -152,18 +171,21 @@ const Device = () => {
 
   // 获取指定蓝牙设备的服务
   const getBLEDeviceServices = (_deviceId) => {
-    Taro.getBLEDeviceServices({
-      deviceId: _deviceId,
-      success: (res) => {
-        console.log(res.services);
-        for (let i = 0; i < res.services.length; i++) {
-          // 如果有指定服务就读取特征值信息
-          if (res.services[i].uuid === SERVICE_ID) {
-            getBLEDeviceCharacteristics(_deviceId, SERVICE_ID);
-            return;
+    return new Promise((resolve, reject) => {
+      Taro.getBLEDeviceServices({
+        deviceId: _deviceId,
+        success: (res) => {
+          console.log(res.services);
+          for (let i = 0; i < res.services.length; i++) {
+            // 如果有指定服务就读取特征值信息
+            if (res.services[i].uuid === SERVICE_ID) {
+              getBLEDeviceCharacteristics(_deviceId, SERVICE_ID);
+              resolve();
+            }
           }
-        }
-      },
+          resolve();
+        },
+      });
     });
   };
 
@@ -171,16 +193,16 @@ const Device = () => {
   const createBLEConnection = (_deviceId: string, _name: string) => {
     console.log('createBLEConnection', _deviceId);
 
-    Taro.createBLEConnection({
-      deviceId: _deviceId,
-      success: () => {
-        setDeviceId(_deviceId);
-        setName(_name);
-        getBLEDeviceServices(_deviceId);
-      },
+    return new Promise((resolve, reject) => {
+      Taro.createBLEConnection({
+        deviceId: _deviceId,
+        success: () => {
+          setDeviceId(_deviceId);
+          setName(_name);
+          resolve();
+        },
+      });
     });
-
-    stopBluetoothDevicesDiscovery();
   };
 
   // const closeBLEConnection = () => {
@@ -196,6 +218,7 @@ const Device = () => {
 
   useEffect(() => {
     return () => {
+      setDevices([]);
       closeBluetoothAdapter();
     };
   }, []);
@@ -203,76 +226,89 @@ const Device = () => {
   return (
     <View>
       <AtMessage />
+      <AtNoticebar>请确认手机是否开启蓝牙和地理获取信息</AtNoticebar>
       <AtButton
+        full
+        type="primary"
         onClick={async () => {
           await openBluetoothAdapter();
+          setIsShow(true);
           startBluetoothDevicesDiscovery();
         }}
       >
         开始扫描
       </AtButton>
-      {/* <AtButton onClick={stopBluetoothDevicesDiscovery}>停止扫描</AtButton> */}
-      <View>已发现 {devices.length} 个外围设备：</View>
-      {devices.map((item) => {
-        return (
-          <AtButton
-            key={item.deviceId}
-            onClick={() => createBLEConnection(item.deviceId, item.name)}
-          >
-            <Text style="font-size: 16px; color: #333;">{item.name}</Text>
-            <Text style="font-size: 10px">
-              信号强度: {item.RSSI}dBm ({Math.max(0, item.RSSI + 100)}%)
-            </Text>
-            <Text style="font-size: 10px">UUID: {item.deviceId}</Text>
-            <Text style="font-size: 10px">
-              Service数量: {item.advertisServiceUUIDs.length}
-            </Text>
-          </AtButton>
-        );
-      })}
+      <AtModal isOpened={isShow}>
+        <AtModalHeader>已扫描到的蓝牙</AtModalHeader>
+        <AtModalContent>
+          <AtList>
+            {devices.map((item) => {
+              return (
+                <AtListItem
+                  key={item.deviceId}
+                  title={item.name}
+                  onClick={async () => {
+                    await createBLEConnection(item.deviceId, item.name);
+                    await getBLEDeviceServices(item.deviceId);
+                    stopBluetoothDevicesDiscovery();
+                    setIsShow(false);
+                  }}
+                />
+              );
+            })}
+          </AtList>
+        </AtModalContent>
+        <AtModalAction>
+          <Button onClick={() => setIsShow(false)}>取消</Button>
+        </AtModalAction>
+      </AtModal>
       <View>
-        <Text>已连接到 {name}</Text>
-        <View>
-          <AtButton
-            onClick={() => {
-              writeBLECharacteristicValue(START);
-            }}
-          >
-            开始连接
-          </AtButton>
-          <AtButton
-            onClick={() => {
-              writeBLECharacteristicValue('7b00A0017d');
-            }}
-          >
-            获取1条数据
-          </AtButton>
-          {uploadData.length === 30
-            ? `该设备的获取到的最新数据为 ${
-                UXSingleData(uploadData).uric
-              } μmol/L`
-            : undefined}
-          {uploadData.length === 30
-            ? ` 时间:
-              ${new Date(UXSingleData(uploadData).timestamp).getFullYear()}/${
-                new Date(UXSingleData(uploadData).timestamp).getMonth() + 1
-              }/${new Date(UXSingleData(uploadData).timestamp).getDate()}
-              ${new Date(UXSingleData(uploadData).timestamp).getHours()}:
-              ${new Date(UXSingleData(uploadData).timestamp).getMinutes()}`
-            : undefined}
-
-          <AtButton onClick={() => submit(uploadData)}>上传到云端</AtButton>
-          {/* <AtButton
-            onClick={() => {
-              setUploadType(5);
-              writeBLECharacteristicValue('7b00A0057d');
-            }}
-          >
-            获取5条数据
-          </AtButton> */}
-          {/* <AtButton onClick={closeBLEConnection}>断开连接</AtButton> */}
-        </View>
+        <AtList>
+          <AtListItem
+            title={`设备名${name}`}
+            iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
+          />
+          <AtListItem
+            title={
+              uploadData.length === 30
+                ? `最新数值为: ${UXSingleData(uploadData).uric} μmol/L`
+                : '请获取最新数值'
+            }
+            iconInfo={{ size: 25, color: '#78A4FA', value: 'filter' }}
+          />
+          <AtListItem
+            title={
+              uploadData.length === 30
+                ? `时间为:
+                ${new Date(UXSingleData(uploadData).timestamp).getFullYear()}/${
+                    new Date(UXSingleData(uploadData).timestamp).getMonth() + 1
+                  }/${new Date(UXSingleData(uploadData).timestamp).getDate()}
+                ${new Date(UXSingleData(uploadData).timestamp).getHours()}:
+                ${new Date(UXSingleData(uploadData).timestamp).getMinutes()}`
+                : '请获取最新数值'
+            }
+            iconInfo={{ size: 25, color: '#78A4FA', value: 'clock' }}
+          />
+        </AtList>
       </View>
+      <AtGrid
+        mode="rect"
+        onClick={(_item, index) => {
+          if (index === 0) {
+            writeBLECharacteristicValue(deviceId, START);
+          } else {
+            submit(uploadData);
+          }
+        }}
+        data={[
+          {
+            value: '获取最新数据',
+          },
+          {
+            value: '上传数据到云',
+          },
+        ]}
+      />
     </View>
   );
 };

@@ -27,12 +27,10 @@ export function buf2hex(buffer) {
 }
 
 // 监听找到设备函数
-export const onBluetoothDeviceFound = () => {
-  return new Promise<Taro.onBluetoothDeviceFound.CallbackResult>((resolve) => {
-    Taro.onBluetoothDeviceFound((res) => {
-      console.log('onBluetoothDeviceFound', res);
-      resolve(res);
-    });
+export const onBluetoothDeviceFound = (callback) => {
+  Taro.onBluetoothDeviceFound((res) => {
+    console.log('onBluetoothDeviceFound', res);
+    callback(res);
   });
 };
 
