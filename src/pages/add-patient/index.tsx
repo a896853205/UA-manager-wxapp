@@ -1,6 +1,6 @@
 import Taro, { memo, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtInput, AtButton } from 'taro-ui';
+import { AtInput, AtButton, AtMessage } from 'taro-ui';
 
 import { PATIENT_SAVE } from '../../constants/api-constants';
 import http from '../../util/http';
@@ -13,30 +13,40 @@ const AddPatient = () => {
   const [RelativeName, setRelativeName] = useState('');
   const [relativeRelation, setRelativeRelation] = useState('');
   const [RelativePhone, setRelativePhone] = useState('');
+  const [saveDataLoading, setSaveDataLoading] = useState(false);
 
-  const submit = () => {
-    http({
-      url: PATIENT_SAVE,
-      method: 'POST',
-      data: {
-        name: name,
-        gender: 1,
-        identify: identity,
-        phone: phone,
-        address: address,
-        relative_name: RelativeName,
-        relative_relation: relativeRelation,
-        relative_phone: RelativePhone,
-      },
-    }).then((res) => {
+  const submit = async () => {
+    if (!saveDataLoading) {
+      setSaveDataLoading(true);
+
+      const res = await http({
+        url: PATIENT_SAVE,
+        method: 'POST',
+        data: {
+          name: name,
+          gender: 1,
+          identify: identity,
+          phone: phone,
+          address: address,
+          relative_name: RelativeName,
+          relative_relation: relativeRelation,
+          relative_phone: RelativePhone,
+        },
+      });
+
       if (res.statusCode === 500) {
-        console.log('增加失败');
+        Taro.atMessage({
+          message: '增加失败',
+          type: 'error',
+        });
       } else if (res.statusCode === 200) {
         Taro.redirectTo({
           url: '../../pages/index/index',
         });
       }
-    });
+
+      setSaveDataLoading(false);
+    }
   };
   // name
   // gender
@@ -59,6 +69,7 @@ const AddPatient = () => {
           setName(`${e}`);
         }}
       />
+      <AtMessage />
       <AtInput
         name="phone"
         title="手机号"
@@ -120,7 +131,7 @@ const AddPatient = () => {
         }}
       />
 
-      <AtButton full type="primary" onClick={submit}>
+      <AtButton full type="primary" onClick={submit} loading={saveDataLoading}>
         保存
       </AtButton>
     </View>
