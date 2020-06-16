@@ -8,4 +8,5 @@ export const PATIENT_SAVE = `${DominConfigs.DOMAIN}/patient/save`;
 export const MEASURE_BASIC = `${DominConfigs.DOMAIN}/measure/basic`;
 export const MEASURE_LATEST = `${DominConfigs.DOMAIN}/measure/latest`;
 export const MEASURE_UPDATE = `${DominConfigs.DOMAIN}/measure/update`;
+export const GET_ME = `${DominConfigs.DOMAIN}/me`;
 // export const PATIENT_LIST = `${DominConfigs.DOMAIN}/patient/list`;

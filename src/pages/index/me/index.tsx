@@ -1,9 +1,12 @@
-import Taro, { memo } from '@tarojs/taro';
+import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
-import { AtIcon } from 'taro-ui';
+import { AtIcon, AtMessage, AtToast } from 'taro-ui';
 
 import './me.css';
 import meTopBackground from '../../../assets/image/me-top-background.png';
+
+import http from '../../../util/http';
+import { GET_ME } from '../../../constants/api-constants';
 
 type PageStateProps = {};
 
@@ -21,18 +24,50 @@ const Me = () => {
    * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
+  const [myInfo, setMyInfo] = useState<any>([]);
+  const [getDataLoading, setGetDataLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setGetDataLoading(true);
+
+      const res = await http({
+        url: GET_ME,
+        method: 'GET',
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取信息失败',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        setMyInfo(res.data.data);
+      }
+
+      setGetDataLoading(false);
+    })();
+  }, []);
+
   return (
     <View className="me-box">
+      <AtMessage />
+      <AtToast
+        isOpened={getDataLoading}
+        hasMask
+        status="loading"
+        text="个人信息加载中..."
+      />
       <Image src={meTopBackground} className="me-background" mode="widthFix" />
       <View className="me-list">
         <View className="me-item me-profile">
           <Image
-            src="https://img2.woyaogexing.com/2020/04/14/fa870d305ba64868a585b8ccbd270a5b!400x400.jpeg"
+            src={myInfo.headurl}
             className="me-head-profile"
           />
           <View className="me-describe">
-            <Text>用户名</Text>
-            <Text className="me-position">哈尔滨</Text>
+            <Text>{myInfo.name}</Text>
+            <Text className="me-position">{myInfo.address}</Text>
           </View>
         </View>
         <View className="me-item">
