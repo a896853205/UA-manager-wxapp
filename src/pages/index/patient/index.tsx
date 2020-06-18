@@ -26,29 +26,34 @@ interface Recommend {
 const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
+  const [isNeedRefresh, setIsNeedRefresh] = useState(true);
 
   useEffect(() => {
     (async () => {
-      setGetDataLoading(true);
+      if (isNeedRefresh) {
+        setGetDataLoading(true);
 
-      const res = await http({
-        url: PATIENT_LIST,
-        method: 'GET',
-      });
+        const res = await http({
+          url: PATIENT_LIST,
+          method: 'GET',
+        });
 
-      if (res.statusCode === 500) {
-        console.log('获取列表失败');
-      } else if (res.statusCode === 200) {
-        setPatientList(res.data.data);
+        if (res.statusCode === 500) {
+          console.log('获取列表失败');
+        } else if (res.statusCode === 200) {
+          setPatientList(res.data.data);
 
-        if (res.data.data[0]) {
-          Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+          if (res.data.data[0]
+            && res.data.data.findIndex(item => item.uuid === Taro.getStorageSync('activePatient')) === -1) {
+            Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+          }
         }
-      }
 
-      setGetDataLoading(false);
+        setGetDataLoading(false);
+        setIsNeedRefresh(false);
+      }
     })();
-  }, []);
+  }, [isNeedRefresh]);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
@@ -68,6 +73,12 @@ const Recommend = () => {
         {patientList.map((patientItem) => (
           <AtSwipeAction
             key={patientItem.uuid}
+            onClick={(e) => {
+              if (e.text === '选择') {
+                Taro.setStorageSync('activePatient', patientItem.uuid);
+                setIsNeedRefresh(true);
+              }
+            }}
             options={[
               {
                 text: '选择',
@@ -87,7 +98,7 @@ const Recommend = () => {
               title={patientItem.name}
               arrow="right"
               note={`电话: ${patientItem.phone}`}
-              iconInfo={{ value: 'check-circle', color: '#999' }}
+              iconInfo={{ value: (patientItem.uuid === Taro.getStorageSync('activePatient')) ? 'check-circle' : '', color: '#999' }}
             />
           </AtSwipeAction>
         ))}
