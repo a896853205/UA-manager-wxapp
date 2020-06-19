@@ -5,7 +5,7 @@ import { AtButton, AtToast, AtMessage } from 'taro-ui';
 import './doctor-detail.css';
 import meTopBackground from '../../assets/image/me-top-background.png';
 
-import { DOCTOR_DETAIL } from '../../constants/api-constants';
+import { DOCTOR_DETAIL, DOCTOR_BIND, DOCTOR_UNBIND } from '../../constants/api-constants';
 import http from '../../util/http';
 
 type PageStateProps = {};
@@ -30,47 +30,84 @@ const Me = () => {
   const [name, setName] = useState('');
   const [skill, setSkill] = useState('');
   const [intro, setIntro] = useState('');
-
+  const [selected, setSelected] = useState(false);
+  const [isNeedRefresh, setIsNeedRefresh] = useState(true);
   const [getDataLoading, setGetDataLoading] = useState(false);
   const doctorUuid = Taro.getStorageSync('viewDoctor');
   const patientUuid = Taro.getStorageSync('activePatient');
 
   useEffect(() => {
     (async () => {
-      if (doctorUuid) {
-        setGetDataLoading(true);
+      if (isNeedRefresh) {
+        if (doctorUuid) {
+          setGetDataLoading(true);
 
-        const res = await http({
-          url: DOCTOR_DETAIL,
-          method: 'GET',
-          data: {
-            doctor_uuid: doctorUuid,
-            patient_uuid: patientUuid,
-          },
-        });
+          const res = await http({
+            url: DOCTOR_DETAIL,
+            method: 'GET',
+            data: {
+              doctor_uuid: doctorUuid,
+              patient_uuid: patientUuid,
+            },
+          });
 
-        if (res.statusCode === 500) {
+          if (res.statusCode === 500) {
+            Taro.atMessage({
+              message: '获取医生详情失败',
+              type: 'error',
+            });
+          } else if (res.statusCode === 200) {
+            setHeadPortrait(res.data.data.avartar);
+            setTotalPatientNumber(res.data.data.total_patient_number);
+            setName(res.data.data.name);
+            setSkill(res.data.data.skill);
+            setIntro(res.data.data.intro);
+            setSelected(res.data.data.selected);
+          }
+
+          setGetDataLoading(false);
+        } else {
           Taro.atMessage({
-            message: '获取医生详情失败',
+            message: '选择医生失败',
             type: 'error',
           });
-        } else if (res.statusCode === 200) {
-          setHeadPortrait(res.data.data.avartar);
-          setTotalPatientNumber(res.data.data.total_patient_number);
-          setName(res.data.data.name);
-          setSkill(res.data.data.skill);
-          setIntro(res.data.data.intro);
         }
-
-        setGetDataLoading(false);
-      } else {
-        Taro.atMessage({
-          message: '选择医生失败',
-          type: 'error',
-        });
+        setIsNeedRefresh(false);
       }
     })();
-  }, [doctorUuid, patientUuid]);
+  }, [doctorUuid, patientUuid, isNeedRefresh]);
+
+  const handleBind = async () => {
+    let res;
+    if (selected) {
+      res = await http({
+        url: DOCTOR_UNBIND,
+        method: 'POST',
+        data: {
+          doctor_uuid: doctorUuid,
+          patient_uuid: patientUuid,
+        },
+      });
+    } else {
+      res = await http({
+        url: DOCTOR_BIND,
+        method: 'POST',
+        data: {
+          doctor_uuid: doctorUuid,
+          patient_uuid: patientUuid,
+        },
+      });
+    }
+
+    if (res.statusCode === 500) {
+      Taro.atMessage({
+        message: '修改绑定医生失败',
+        type: 'error',
+      });
+    } else if (res.statusCode === 200) {
+      setIsNeedRefresh(true);
+    }
+  }
 
   return (
     <View className="me-box">
@@ -104,7 +141,7 @@ const Me = () => {
         </View>
 
         <View className="me-item">
-          <AtButton type="primary">选择该医生</AtButton>
+          <AtButton type="primary" onClick={handleBind}>{selected ? '解绑该医生' : '选择该医生'}</AtButton>
         </View>
       </View>
     </View>

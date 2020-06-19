@@ -23,31 +23,36 @@ const Doctor = () => {
   const [doctorList, setDoctorList] = useState<any>([]);
   const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
+  const [isNeedRefresh, setIsNeedRefresh] = useState(true);
   const activePatient = Taro.getStorageSync('activePatient');
 
   useEffect(() => {
     (async () => {
-      setGetDataLoading(true);
+      if (isNeedRefresh) {
+        setGetDataLoading(true);
 
-      const res = await http({
-        url: DOCTOR_LIST,
-        method: 'GET',
-        data: {
-          page: 0,
-          limit: DOCTOR_LIST_SIZE,
-        },
-      });
-
-      if (res.statusCode === 500) {
-        Taro.atMessage({
-          message: '获取列表失败',
-          type: 'error',
+        const res = await http({
+          url: DOCTOR_LIST,
+          method: 'GET',
+          data: {
+            page: 0,
+            limit: DOCTOR_LIST_SIZE,
+          },
         });
-      } else if (res.statusCode === 200) {
-        setDoctorList(res.data.data.rows);
-      }
 
-      setGetDataLoading(false);
+        if (res.statusCode === 500) {
+          Taro.atMessage({
+            message: '获取列表失败',
+            type: 'error',
+          });
+        } else if (res.statusCode === 200) {
+          setDoctorList(res.data.data.rows);
+        }
+
+        setGetDataLoading(false);
+
+        setIsNeedRefresh(false);
+      }
     })();
   }, []);
 
