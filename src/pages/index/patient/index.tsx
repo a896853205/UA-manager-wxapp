@@ -1,6 +1,6 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtList, AtSwipeAction, AtListItem, AtButton, AtToast } from 'taro-ui';
+import { AtList, AtSwipeAction, AtListItem, AtButton, AtToast, AtMessage } from 'taro-ui';
 
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
@@ -15,6 +15,8 @@ import { PATIENT_LIST } from '../../../constants/api-constants';
 //
 // #endregion
 
+const PATIENT_LIST_SIZE = 5;
+
 type PageStateProps = {};
 
 type IProps = PageStateProps;
@@ -26,34 +28,34 @@ interface Recommend {
 const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
-  const [isNeedRefresh, setIsNeedRefresh] = useState(true);
+  const [patientUuid, setPatientUuid] = useState(true);
 
   useEffect(() => {
     (async () => {
-      if (isNeedRefresh) {
-        setGetDataLoading(true);
+      setGetDataLoading(true);
 
-        const res = await http({
-          url: PATIENT_LIST,
-          method: 'GET',
+      const res = await http({
+        url: PATIENT_LIST,
+        method: 'GET',
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取列表失败',
+          type: 'error',
         });
+      } else if (res.statusCode === 200) {
+        setPatientList(res.data.data);
 
-        if (res.statusCode === 500) {
-          console.log('获取列表失败');
-        } else if (res.statusCode === 200) {
-          setPatientList(res.data.data);
-
-          if (res.data.data[0]
-            && res.data.data.findIndex(item => item.uuid === Taro.getStorageSync('activePatient')) === -1) {
-            Taro.setStorageSync('activePatient', res.data.data[0].uuid);
-          }
+        if (res.data.data[0]
+          && res.data.data.findIndex(item => item.uuid === Taro.getStorageSync('activePatient')) === -1) {
+          Taro.setStorageSync('activePatient', res.data.data[0].uuid);
         }
-
-        setGetDataLoading(false);
-        setIsNeedRefresh(false);
       }
+
+      setGetDataLoading(false);
     })();
-  }, [isNeedRefresh]);
+  }, []);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
@@ -69,44 +71,46 @@ const Recommend = () => {
         status="loading"
         text="患者信息加载中..."
       />
+      <AtMessage />
       <AtList>
-        {patientList.map((patientItem) => (
-          <AtSwipeAction
-            key={patientItem.uuid}
-            onClick={(e) => {
-              if (e.text === '选择') {
-                Taro.setStorageSync('activePatient', patientItem.uuid);
-                setIsNeedRefresh(true);
-              }
-              else {
-                Taro.setStorageSync('modifyPatient', patientItem.uuid);
-                Taro.navigateTo({
-                  url: '/pages/add-patient/index',
-                });
-              }
-            }}
-            options={[
-              {
-                text: '选择',
-                style: {
-                  backgroundColor: '#6190E8',
+        {patientList.map((patientItem, index) => (
+          index < PATIENT_LIST_SIZE ?
+            <AtSwipeAction
+              key={patientItem.uuid}
+              onClick={(e) => {
+                if (e.text === '选择') {
+                  Taro.setStorageSync('activePatient', patientItem.uuid);
+                  setPatientUuid(patientItem.uuid);
+                }
+                else {
+                  Taro.setStorageSync('modifyPatient', patientItem.uuid);
+                  Taro.navigateTo({
+                    url: '/pages/add-patient/index',
+                  });
+                }
+              }}
+              options={[
+                {
+                  text: '选择',
+                  style: {
+                    backgroundColor: '#6190E8',
+                  },
                 },
-              },
-              {
-                text: '修改',
-                style: {
-                  backgroundColor: '#FF4949',
+                {
+                  text: '修改',
+                  style: {
+                    backgroundColor: '#FF4949',
+                  },
                 },
-              },
-            ]}
-          >
-            <AtListItem
-              title={patientItem.name}
-              arrow="right"
-              note={`电话: ${patientItem.phone}`}
-              iconInfo={{ value: (patientItem.uuid === Taro.getStorageSync('activePatient')) ? 'check-circle' : '', color: '#999' }}
-            />
-          </AtSwipeAction>
+              ]}
+            >
+              <AtListItem
+                title={patientItem.name}
+                arrow="right"
+                note={`电话: ${patientItem.phone}`}
+                iconInfo={{ value: (patientItem.uuid === patientUuid) ? 'check-circle' : '', color: '#999' }}
+              />
+            </AtSwipeAction> : null
         ))}
       </AtList>
       <AtButton
