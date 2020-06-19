@@ -78,51 +78,22 @@ const Doctor = () => {
         </AtCard>
       </View>
       <AtList>
-        {doctorList.map((doctorItem, index) =>
-          index < DOCTOR_LIST_SIZE ? (
-            <AtListItem
-              title={doctorItem.name}
-              arrow="right"
-              note={`电话: ${doctorItem.phone}`}
-              thumb={doctorItem.avartar}
-              extraText="查看详情"
-              onClick={() => {
-                Taro.navigateTo({
-                  url: '/pages/doctor-detail/index',
-                });
-              }}
-            />
-          ) : null
-        )}
+        {doctorList.map((doctorItem) => (
+          <AtListItem
+            key={doctorItem.uuid}
+            title={doctorItem.name}
+            arrow="right"
+            note={`电话: ${doctorItem.phone}`}
+            thumb={doctorItem.avartar}
+            extraText="查看详情"
+            onClick={() => {
+              Taro.navigateTo({
+                url: '/pages/doctor-detail/index',
+              });
+            }}
+          />
+        ))}
       </AtList>
-      {/* <AtList>
-        <AtListItem
-          title="钱医生"
-          arrow="right"
-          note="电话: 15998133472"
-          thumb={doctorDefault}
-          extraText="查看详情"
-          onClick={() => {
-            Taro.navigateTo({
-              url: '/pages/doctor-detail/index',
-            });
-          }}
-        />
-        <AtListItem
-          title="张医生"
-          arrow="right"
-          note="电话: -"
-          thumb={doctorDefault}
-          extraText="查看详情"
-        />
-        <AtListItem
-          title="李医生"
-          arrow="right"
-          note="电话: 1599816589"
-          thumb={doctorDefault}
-          extraText="查看详情"
-        />
-      </AtList> */}
     </View>
   );
 };
