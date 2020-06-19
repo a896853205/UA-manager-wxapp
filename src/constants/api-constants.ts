@@ -13,4 +13,5 @@ export const MEASURE_LATEST = `${DominConfigs.DOMAIN}/measure/latest`;
 export const MEASURE_UPDATE = `${DominConfigs.DOMAIN}/measure/update`;
 export const GET_ME = `${DominConfigs.DOMAIN}/me`;
 export const DOCTOR_LIST = `${DominConfigs.DOMAIN}/doctor/list`;
+export const DOCTOR_DETAIL = `${DominConfigs.DOMAIN}/doctor/detail`;
 // export const PATIENT_LIST = `${DominConfigs.DOMAIN}/patient/list`;

@@ -87,6 +87,7 @@ const Doctor = () => {
             thumb={doctorItem.avartar}
             extraText="查看详情"
             onClick={() => {
+              Taro.setStorageSync('viewDoctor', doctorItem.uuid);
               Taro.navigateTo({
                 url: '/pages/doctor-detail/index',
               });
