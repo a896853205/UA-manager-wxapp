@@ -78,6 +78,12 @@ const Recommend = () => {
                 Taro.setStorageSync('activePatient', patientItem.uuid);
                 setIsNeedRefresh(true);
               }
+              else {
+                Taro.setStorageSync('modifyPatient', patientItem.uuid);
+                Taro.navigateTo({
+                  url: '/pages/add-patient/index',
+                });
+              }
             }}
             options={[
               {
@@ -106,7 +112,10 @@ const Recommend = () => {
       <AtButton
         full
         type="primary"
-        onClick={() => Taro.navigateTo({ url: '/pages/add-patient/index' })}
+        onClick={() => {
+          Taro.removeStorageSync('modifyPatient');
+          Taro.navigateTo({ url: '/pages/add-patient/index' })
+        }}
       >
         添加患者
       </AtButton>
