@@ -59,6 +59,7 @@ const AddPatient = () => {
 
   return (
     <View>
+      <AtMessage />
       <AtInput
         name="name"
         title="姓名"
@@ -69,7 +70,6 @@ const AddPatient = () => {
           setName(`${e}`);
         }}
       />
-      <AtMessage />
       <AtInput
         name="phone"
         title="手机号"
