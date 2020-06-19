@@ -1,6 +1,13 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtList, AtSwipeAction, AtListItem, AtButton, AtToast, AtMessage } from 'taro-ui';
+import {
+  AtList,
+  AtSwipeAction,
+  AtListItem,
+  AtButton,
+  AtToast,
+  AtMessage,
+} from 'taro-ui';
 
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
@@ -47,11 +54,14 @@ const Recommend = () => {
       } else if (res.statusCode === 200) {
         setPatientList(res.data.data);
 
-        if (res.data.data[0]
-          && res.data.data.findIndex(item => item.uuid === Taro.getStorageSync('activePatient')) === -1) {
-          Taro.setStorageSync('activePatient', res.data.data[0].uuid);
-        }
-        else {
+        if (
+          res.data.data[0] &&
+          res.data.data.findIndex(
+            (item) => item.uuid === Taro.getStorageSync('activePatient')
+          ) === -1
+        ) {
+          setPatientUuid(res.data.data[0].uuid);
+        } else {
           setPatientUuid(Taro.getStorageSync('activePatient'));
         }
       }
@@ -59,6 +69,12 @@ const Recommend = () => {
       setGetDataLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    if (patientUuid) {
+      Taro.setStorageSync('activePatient', patientUuid);
+    }
+  }, [patientUuid]);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
@@ -76,16 +92,15 @@ const Recommend = () => {
       />
       <AtMessage />
       <AtList>
-        {patientList.map((patientItem, index) => (
-          index < PATIENT_LIST_SIZE ?
+        {patientList.map((patientItem, index) =>
+          index < PATIENT_LIST_SIZE ? (
             <AtSwipeAction
               key={patientItem.uuid}
               onClick={(e) => {
                 if (e.text === '选择') {
                   Taro.setStorageSync('activePatient', patientItem.uuid);
                   setPatientUuid(patientItem.uuid);
-                }
-                else {
+                } else {
                   Taro.setStorageSync('modifyPatient', patientItem.uuid);
                   Taro.navigateTo({
                     url: '/pages/add-patient/index',
@@ -111,17 +126,21 @@ const Recommend = () => {
                 title={patientItem.name}
                 arrow="right"
                 note={`电话: ${patientItem.phone}`}
-                iconInfo={{ value: (patientItem.uuid === patientUuid) ? 'check-circle' : '', color: '#999' }}
+                iconInfo={{
+                  value: patientItem.uuid === patientUuid ? 'check-circle' : '',
+                  color: '#999',
+                }}
               />
-            </AtSwipeAction> : null
-        ))}
+            </AtSwipeAction>
+          ) : null
+        )}
       </AtList>
       <AtButton
         full
         type="primary"
         onClick={() => {
           Taro.removeStorageSync('modifyPatient');
-          Taro.navigateTo({ url: '/pages/add-patient/index' })
+          Taro.navigateTo({ url: '/pages/add-patient/index' });
         }}
       >
         添加患者
