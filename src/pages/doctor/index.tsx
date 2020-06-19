@@ -8,7 +8,7 @@ import doctorDefault from '../../assets/image/doctor-default.jpg';
 import selected from '../../assets/icon/selected.png';
 
 import http from '../../util/http';
-import { DOCTOR_LIST } from '../../constants/api-constants';
+import { DOCTOR_LIST, DOCTOR_ACTIVE } from '../../constants/api-constants';
 
 const DOCTOR_LIST_SIZE = 5;
 
@@ -22,7 +22,9 @@ const Doctor = () => {
    */
 
   const [doctorList, setDoctorList] = useState<any>([]);
+  const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
+  const activePatient = Taro.getStorageSync('activePatient');
 
   useEffect(() => {
     (async () => {
@@ -51,6 +53,31 @@ const Doctor = () => {
   }, []);
 
   useEffect(() => {
+    (async () => {
+      setGetDataLoading(true);
+
+      const res = await http({
+        url: DOCTOR_ACTIVE,
+        method: 'GET',
+        data: {
+          uuid: activePatient,
+        },
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取选择列表失败',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        setActiveDoctorList(res.data.data);
+      }
+
+      setGetDataLoading(false);
+    })();
+  }, [activePatient]);
+
+  useEffect(() => {
     Taro.setNavigationBarTitle({
       title: '选择医生',
     });
@@ -67,14 +94,21 @@ const Doctor = () => {
       <AtMessage />
       <View className="current-doctor-box">
         <AtCard thumb={selected} title="当前医生选择">
-          <AtList hasBorder={false}>
+          {activeDoctorList.map((doctorItem) => (
             <AtListItem
-              title="钱医生"
+              key={doctorItem.uuid}
+              title={doctorItem.name}
               arrow="right"
-              note="电话: 15998133472"
-              thumb={doctorDefault}
+              note={`电话: ${doctorItem.phone}`}
+              thumb={doctorItem.avartar}
+              extraText="查看详情"
+              onClick={() => {
+                Taro.navigateTo({
+                  url: '/pages/doctor-detail/index',
+                });
+              }}
             />
-          </AtList>
+          ))}
         </AtCard>
       </View>
       <AtList>
