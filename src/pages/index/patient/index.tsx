@@ -28,7 +28,7 @@ interface Recommend {
 const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
-  const [patientUuid, setPatientUuid] = useState(true);
+  const [patientUuid, setPatientUuid] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -50,6 +50,9 @@ const Recommend = () => {
         if (res.data.data[0]
           && res.data.data.findIndex(item => item.uuid === Taro.getStorageSync('activePatient')) === -1) {
           Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+        }
+        else {
+          setPatientUuid(Taro.getStorageSync('activePatient'));
         }
       }
 
