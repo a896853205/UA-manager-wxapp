@@ -45,7 +45,7 @@ const Me = () => {
           method: 'GET',
           data: {
             doctor_uuid: doctorUuid,
-            patient_uuid: patientUuid
+            patient_uuid: patientUuid,
           },
         });
 
@@ -70,7 +70,7 @@ const Me = () => {
         });
       }
     })();
-  }, [doctorUuid]);
+  }, [doctorUuid, patientUuid]);
 
   return (
     <View className="me-box">
@@ -96,15 +96,11 @@ const Me = () => {
         </View>
         <View className="me-item">
           <View className="item-title">个人简介</View>
-          <View className="item-name">
-            {intro}
-          </View>
+          <View className="item-name">{intro}</View>
         </View>
         <View className="me-item">
           <View className="item-title">擅长方向</View>
-          <View className="item-name">
-            {skill}
-          </View>
+          <View className="item-name">{skill}</View>
         </View>
 
         <View className="me-item">

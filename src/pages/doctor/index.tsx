@@ -4,7 +4,6 @@ import { AtList, AtListItem, AtCard, AtToast, AtMessage } from 'taro-ui';
 
 import './doctor.css';
 
-import doctorDefault from '../../assets/image/doctor-default.jpg';
 import selected from '../../assets/icon/selected.png';
 
 import http from '../../util/http';
@@ -103,6 +102,7 @@ const Doctor = () => {
               thumb={doctorItem.avartar}
               extraText="查看详情"
               onClick={() => {
+                Taro.setStorageSync('viewDoctor', doctorItem.uuid);
                 Taro.navigateTo({
                   url: '/pages/doctor-detail/index',
                 });
