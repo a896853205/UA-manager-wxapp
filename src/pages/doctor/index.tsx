@@ -1,11 +1,16 @@
-import Taro, { memo, useEffect } from '@tarojs/taro';
+import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtList, AtListItem, AtCard } from 'taro-ui';
+import { AtList, AtListItem, AtCard, AtToast, AtMessage } from 'taro-ui';
 
 import './doctor.css';
 
 import doctorDefault from '../../assets/image/doctor-default.jpg';
 import selected from '../../assets/icon/selected.png';
+
+import http from '../../util/http';
+import { DOCTOR_LIST } from '../../constants/api-constants';
+
+const DOCTOR_LIST_SIZE = 5;
 
 const Doctor = () => {
   /**
@@ -16,6 +21,35 @@ const Doctor = () => {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
 
+  const [doctorList, setDoctorList] = useState<any>([]);
+  const [getDataLoading, setGetDataLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setGetDataLoading(true);
+
+      const res = await http({
+        url: DOCTOR_LIST,
+        method: 'GET',
+        data: {
+          page: 0,
+          limit: DOCTOR_LIST_SIZE,
+        },
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取列表失败',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        setDoctorList(res.data.data.rows);
+      }
+
+      setGetDataLoading(false);
+    })();
+  }, []);
+
   useEffect(() => {
     Taro.setNavigationBarTitle({
       title: '选择医生',
@@ -24,6 +58,13 @@ const Doctor = () => {
 
   return (
     <View className="doctor-box">
+      <AtToast
+        isOpened={getDataLoading}
+        hasMask
+        status="loading"
+        text="医生信息加载中..."
+      />
+      <AtMessage />
       <View className="current-doctor-box">
         <AtCard thumb={selected} title="当前医生选择">
           <AtList hasBorder={false}>
@@ -37,6 +78,24 @@ const Doctor = () => {
         </AtCard>
       </View>
       <AtList>
+        {doctorList.map((doctorItem, index) =>
+          index < DOCTOR_LIST_SIZE ? (
+            <AtListItem
+              title={doctorItem.name}
+              arrow="right"
+              note={`电话: ${doctorItem.phone}`}
+              thumb={doctorItem.avartar}
+              extraText="查看详情"
+              onClick={() => {
+                Taro.navigateTo({
+                  url: '/pages/doctor-detail/index',
+                });
+              }}
+            />
+          ) : null
+        )}
+      </AtList>
+      {/* <AtList>
         <AtListItem
           title="钱医生"
           arrow="right"
@@ -63,7 +122,7 @@ const Doctor = () => {
           thumb={doctorDefault}
           extraText="查看详情"
         />
-      </AtList>
+      </AtList> */}
     </View>
   );
 };
