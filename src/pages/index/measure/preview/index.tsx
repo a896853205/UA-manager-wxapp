@@ -1,14 +1,17 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
-import { AtGrid, AtToast } from 'taro-ui';
+import { AtGrid, AtToast, AtMessage } from 'taro-ui';
 
-import { MEASURE_LATEST } from '../../../../constants/api-constants';
+import {
+  MEASURE_LATEST,
+  DOCTOR_ACTIVE,
+} from '../../../../constants/api-constants';
 import http from '../../../../util/http';
 
 // icon
 import './preview.css';
-import refresh from '../../../../assets/icon/refresh.png';
+// import refresh from '../../../../assets/icon/refresh.png';
 import config from '../../../../assets/icon/config.png';
 import doctor from '../../../../assets/icon/doctor.png';
 
@@ -24,12 +27,17 @@ const Preview = () => {
     (state) => state.measure
   );
   const activePatientUuid = Taro.getStorageSync('activePatient');
+  const needFresh = Taro.getStorageSync('needFresh');
+
   const [uric, setUric] = useState(0);
 
   const [TUric, setTUric] = useState(0);
   const [fat, setFat] = useState(0);
   const [sugar, setSugar] = useState(0);
   const [getDataLoading, setGetDataLoading] = useState(true);
+  const [activeDoctorLoading, setActiveDoctorLoading] = useState(true);
+  const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
+  const activePatient = Taro.getStorageSync('activePatient');
 
   useEffect(() => {
     (async () => {
@@ -58,13 +66,75 @@ const Preview = () => {
     })();
   }, [activePatientUuid, measureType]);
 
+  useEffect(() => {
+    (async () => {
+      setActiveDoctorLoading(true);
+
+      const res = await http({
+        url: DOCTOR_ACTIVE,
+        method: 'GET',
+        data: {
+          uuid: activePatient,
+        },
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取选择列表失败',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        setActiveDoctorList(res.data.data);
+      }
+
+      setActiveDoctorLoading(false);
+    })();
+  }, [activePatient]);
+
+  useEffect(() => {
+    if (needFresh) {
+      (async () => {
+        setGetDataLoading(true);
+        const res = await http({
+          url: MEASURE_LATEST,
+          method: 'GET',
+          data: {
+            uuid: Taro.getStorageSync('activePatient'),
+            type: measureType,
+          },
+        });
+
+        if (res.statusCode === 500) {
+          console.log('获取基本数据失败');
+        } else if (res.statusCode === 200) {
+          if (measureType === 'single') {
+            setUric(res.data.data.uric);
+          } else if (measureType === 'triple') {
+            setTUric(res.data.data.uric);
+            setFat(res.data.data.fat);
+            setSugar(res.data.data.sugar);
+          }
+        }
+        setGetDataLoading(false);
+        Taro.setStorageSync('needFresh', false);
+      })();
+    }
+  }, [needFresh]);
+
   return (
     <View className="page">
+      <AtMessage />
       <AtToast
         isOpened={getDataLoading}
         hasMask
         status="loading"
         text="测量数据加载中..."
+      />
+      <AtToast
+        isOpened={activeDoctorLoading}
+        hasMask
+        status="loading"
+        text="信息加载中..."
       />
       {measureType === 'single' ? (
         <View className="value-preview-box">
@@ -116,26 +186,34 @@ const Preview = () => {
         columnNum={3}
         onClick={(_item, index) => {
           switch (index) {
+            // case 0:
+            //   Taro.navigateTo({ url: '/pages/sync-data/index' });
+            //   break;
             case 0:
-              Taro.navigateTo({ url: '/pages/sync-data/index' });
-              break;
-            case 1:
-              Taro.navigateTo({ url: '/pages/device/index' });
+              if (activeDoctorList.length !== 0) {
+                Taro.navigateTo({ url: '/pages/device/index' });
+              } else {
+                Taro.atMessage({
+                  message: '请先选择医生再同步数据',
+                  type: 'error',
+                });
+              }
+
               break;
             case 3:
               // Taro.navigateTo({ url: '/pages/data-detail/index' });
               break;
-            case 2:
+            case 1:
               Taro.navigateTo({ url: '/pages/doctor/index' });
               break;
             default:
           }
         }}
         data={[
-          {
-            image: refresh,
-            value: '同步数据',
-          },
+          // {
+          //   image: refresh,
+          //   value: '同步数据',
+          // },
 
           // {
           //   image: bar,
@@ -143,7 +221,7 @@ const Preview = () => {
           // },
           {
             image: config,
-            value: '设备设置',
+            value: '同步数据',
           },
           {
             image: doctor,

@@ -2,9 +2,10 @@ import Taro, { useState, useEffect, memo } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtTabBar } from 'taro-ui';
 import { useDispatch } from '@tarojs/redux';
+
 import { changeMeasureType } from '../../../actions/measure';
-// 组件
 import Preview from './preview';
+
 // #region 书写注意
 //
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性

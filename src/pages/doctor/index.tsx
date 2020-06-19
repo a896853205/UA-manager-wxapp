@@ -22,6 +22,7 @@ const Doctor = () => {
 
   const [doctorList, setDoctorList] = useState<any>([]);
   const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
+  const [activeDoctorLoading, setActiveDoctorLoading] = useState(true);
   const [getDataLoading, setGetDataLoading] = useState(true);
   const activePatient = Taro.getStorageSync('activePatient');
 
@@ -53,7 +54,7 @@ const Doctor = () => {
 
   useEffect(() => {
     (async () => {
-      setGetDataLoading(true);
+      setActiveDoctorLoading(true);
 
       const res = await http({
         url: DOCTOR_ACTIVE,
@@ -72,7 +73,7 @@ const Doctor = () => {
         setActiveDoctorList(res.data.data);
       }
 
-      setGetDataLoading(false);
+      setActiveDoctorLoading(false);
     })();
   }, [activePatient]);
 
@@ -84,6 +85,12 @@ const Doctor = () => {
 
   return (
     <View className="doctor-box">
+      <AtToast
+        isOpened={activeDoctorLoading}
+        hasMask
+        status="loading"
+        text="已选择医生信息加载中..."
+      />
       <AtToast
         isOpened={getDataLoading}
         hasMask

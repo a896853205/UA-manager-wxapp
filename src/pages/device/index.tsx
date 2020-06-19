@@ -63,6 +63,7 @@ const Device = () => {
         if (res.statusCode === 500) {
           console.log('数据提交失败');
         } else if (res.statusCode === 200) {
+          Taro.setStorageSync('needFresh', true);
           Taro.atMessage({
             message: '上传数据成功',
             type: 'success',

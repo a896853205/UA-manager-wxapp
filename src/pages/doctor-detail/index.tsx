@@ -87,7 +87,7 @@ const Me = () => {
           <Image
             src={headPortrait}
             className="me-head-profile"
-            mode="widthFix"
+            // mode="widthFix"
           />
           <View className="me-describe">
             <Text>{name}</Text>
