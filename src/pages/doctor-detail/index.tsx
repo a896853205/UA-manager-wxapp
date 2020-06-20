@@ -1,6 +1,8 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 import { AtButton, AtToast, AtMessage } from 'taro-ui';
+import { useDispatch } from '@tarojs/redux';
+import { changeSelectedDoctor } from '../../actions/doctor';
 
 import './doctor-detail.css';
 import meTopBackground from '../../assets/image/me-top-background.png';
@@ -35,6 +37,7 @@ const Me = () => {
   const [getDataLoading, setGetDataLoading] = useState(false);
   const doctorUuid = Taro.getStorageSync('viewDoctor');
   const patientUuid = Taro.getStorageSync('activePatient');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -106,6 +109,7 @@ const Me = () => {
       });
     } else if (res.statusCode === 200) {
       setIsNeedRefresh(true);
+      dispatch(changeSelectedDoctor(true));
     }
   }
 

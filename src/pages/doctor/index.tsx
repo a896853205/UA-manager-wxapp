@@ -1,6 +1,8 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
+import { useSelector, useDispatch } from '@tarojs/redux';
 import { AtList, AtListItem, AtCard, AtToast, AtMessage } from 'taro-ui';
+import { changeSelectedDoctor } from '../../actions/doctor';
 
 import './doctor.css';
 
@@ -8,6 +10,13 @@ import selected from '../../assets/icon/selected.png';
 
 import http from '../../util/http';
 import { DOCTOR_LIST, DOCTOR_ACTIVE } from '../../constants/api-constants';
+
+interface Idoctor {
+  isChanged: Boolean;
+}
+interface Istatus {
+  doctor: Idoctor;
+}
 
 const DOCTOR_LIST_SIZE = 5;
 
@@ -19,12 +28,41 @@ const Doctor = () => {
    * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
-
+  const { isChanged } = useSelector<Istatus, Idoctor>(
+    (state) => state.doctor
+  );
   const [doctorList, setDoctorList] = useState<any>([]);
   const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
   const [isNeedRefresh, setIsNeedRefresh] = useState(true);
   const activePatient = Taro.getStorageSync('activePatient');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      setGetDataLoading(true);
+
+      const res = await http({
+        url: DOCTOR_LIST,
+        method: 'GET',
+        data: {
+          page: 0,
+          limit: DOCTOR_LIST_SIZE,
+        },
+      });
+
+      if (res.statusCode === 500) {
+        Taro.atMessage({
+          message: '获取列表失败',
+          type: 'error',
+        });
+      } else if (res.statusCode === 200) {
+        setDoctorList(res.data.data.rows);
+      }
+
+      setGetDataLoading(false);
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -32,54 +70,34 @@ const Doctor = () => {
         setGetDataLoading(true);
 
         const res = await http({
-          url: DOCTOR_LIST,
+          url: DOCTOR_ACTIVE,
           method: 'GET',
           data: {
-            page: 0,
-            limit: DOCTOR_LIST_SIZE,
+            uuid: activePatient,
           },
         });
 
         if (res.statusCode === 500) {
           Taro.atMessage({
-            message: '获取列表失败',
+            message: '获取选择列表失败',
             type: 'error',
           });
         } else if (res.statusCode === 200) {
-          setDoctorList(res.data.data.rows);
+          setActiveDoctorList(res.data.data);
         }
 
         setGetDataLoading(false);
-
         setIsNeedRefresh(false);
       }
     })();
-  }, []);
+  }, [activePatient, isNeedRefresh]);
 
   useEffect(() => {
-    (async () => {
-      setGetDataLoading(true);
-
-      const res = await http({
-        url: DOCTOR_ACTIVE,
-        method: 'GET',
-        data: {
-          uuid: activePatient,
-        },
-      });
-
-      if (res.statusCode === 500) {
-        Taro.atMessage({
-          message: '获取选择列表失败',
-          type: 'error',
-        });
-      } else if (res.statusCode === 200) {
-        setActiveDoctorList(res.data.data);
-      }
-
-      setGetDataLoading(false);
-    })();
-  }, [activePatient]);
+    if (isChanged) {
+      setIsNeedRefresh(true);
+      dispatch(changeSelectedDoctor(false));
+    }
+  }, [isChanged]);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
