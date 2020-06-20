@@ -1,6 +1,6 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtInput, AtButton, AtMessage, AtForm } from 'taro-ui';
+import { AtInput, AtButton, AtMessage, AtForm, AtToast } from 'taro-ui';
 
 import {
   PATIENT_DETAIL,
@@ -18,11 +18,14 @@ const AddPatient = () => {
   const [relativeRelation, setRelativeRelation] = useState('');
   const [relativePhone, setRelativePhone] = useState('');
   const [saveDataLoading, setSaveDataLoading] = useState(false);
+  const [getDataLoading, setGetDataLoading] = useState(false);
   const patientUuid = Taro.getStorageSync('modifyPatient');
 
   useEffect(() => {
     (async () => {
       if (patientUuid) {
+        setGetDataLoading(true);
+
         const res = await http({
           url: PATIENT_DETAIL,
           method: 'GET',
@@ -40,6 +43,8 @@ const AddPatient = () => {
           setRelativeRelation(res.data.data.relative_relation);
           setRelativePhone(res.data.data.relative_phone);
         }
+
+        setGetDataLoading(false);
       }
     })();
   }, [patientUuid]);
@@ -104,6 +109,13 @@ const AddPatient = () => {
 
   return (
     <View>
+      <AtToast
+        isOpened={getDataLoading}
+        hasMask
+        status="loading"
+        text="患者信息加载中..."
+      />
+      <AtMessage />
       <AtForm onSubmit={submit}>
         <AtInput
           name="name"
@@ -115,7 +127,6 @@ const AddPatient = () => {
             setName(`${e}`);
           }}
         />
-        <AtMessage />
         <AtInput
           name="phone"
           title="手机号"
