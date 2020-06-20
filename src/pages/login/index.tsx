@@ -33,7 +33,7 @@ const Login = () => {
         Taro.setStorageSync('token', res.data.data.token);
 
         Taro.redirectTo({
-          url: '../../pages/index/index',
+          url: '../../pages/index/index?cur=1',
         });
       }
 

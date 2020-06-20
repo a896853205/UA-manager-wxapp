@@ -76,59 +76,33 @@ const Preview = () => {
   }, [activePatientUuid, measureType]);
 
   useEffect(() => {
-    (async () => {
-      setActiveDoctorLoading(true);
-
-      const res = await http({
-        url: DOCTOR_ACTIVE,
-        method: 'GET',
-        data: {
-          uuid: activePatient,
-        },
-      });
-
-      if (res.statusCode === 500) {
-        Taro.atMessage({
-          message: '获取选择列表失败',
-          type: 'error',
-        });
-      } else if (res.statusCode === 200) {
-        setActiveDoctorList(res.data.data);
-      }
-
-      setActiveDoctorLoading(false);
-    })();
-  }, [activePatient, isNeedRefresh]);
-
-  useEffect(() => {
     if (isNeedRefresh) {
+      console.log(isNeedRefresh);
       (async () => {
-        setGetDataLoading(true);
+        setActiveDoctorLoading(true);
+
         const res = await http({
-          url: MEASURE_LATEST,
+          url: DOCTOR_ACTIVE,
           method: 'GET',
           data: {
-            uuid: Taro.getStorageSync('activePatient'),
-            type: measureType,
+            uuid: activePatient,
           },
         });
 
         if (res.statusCode === 500) {
-          console.log('获取基本数据失败');
+          Taro.atMessage({
+            message: '获取选择列表失败',
+            type: 'error',
+          });
         } else if (res.statusCode === 200) {
-          if (measureType === 'single') {
-            setUric(res.data.data.uric);
-          } else if (measureType === 'triple') {
-            setTUric(res.data.data.uric);
-            setFat(res.data.data.fat);
-            setSugar(res.data.data.sugar);
-          }
+          setActiveDoctorList(res.data.data);
         }
-        setGetDataLoading(false);
+
+        setActiveDoctorLoading(false);
         setIsNeedRefresh(false);
       })();
     }
-  }, [isNeedRefresh]);
+  }, [activePatient, isNeedRefresh]);
 
   useEffect(() => {
     if (isChanged) {

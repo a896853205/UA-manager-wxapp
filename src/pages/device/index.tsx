@@ -76,6 +76,7 @@ const Device = () => {
             message: '上传数据成功',
             type: 'success',
           });
+          Taro.reLaunch({ url: '/pages/index/index?cur=0' });
         }
         setSubmitLoading(false);
       });

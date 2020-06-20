@@ -109,7 +109,9 @@ const Me = () => {
       });
     } else if (res.statusCode === 200) {
       dispatch(changeSelectedDoctor(true));
-      Taro.navigateTo({ url: '/pages/doctor/index' });
+      if (!selected) {
+        Taro.reLaunch({ url: '/pages/index/index?cur=0' });
+      }
     }
   };
 
@@ -143,12 +145,13 @@ const Me = () => {
           <View className="item-title">擅长方向</View>
           <View className="item-name">{skill}</View>
         </View>
-
-        <View className="me-item">
-          <AtButton type="primary" onClick={handleBind}>
-            {selected ? '解绑该医生' : '选择该医生'}
-          </AtButton>
-        </View>
+        {selected ? null : (
+          <View className="me-item">
+            <AtButton type="primary" onClick={handleBind}>
+              选择该医生
+            </AtButton>
+          </View>
+        )}
       </View>
     </View>
   );
