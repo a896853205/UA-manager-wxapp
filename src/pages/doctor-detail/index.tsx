@@ -1,11 +1,17 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 import { AtButton, AtToast, AtMessage } from 'taro-ui';
+import { useDispatch } from '@tarojs/redux';
 
+import { changeSelectedDoctor } from '../../actions/doctor';
 import './doctor-detail.css';
 import meTopBackground from '../../assets/image/me-top-background.png';
 
-import { DOCTOR_DETAIL } from '../../constants/api-constants';
+import {
+  DOCTOR_DETAIL,
+  DOCTOR_BIND,
+  DOCTOR_UNBIND,
+} from '../../constants/api-constants';
 import http from '../../util/http';
 
 type PageStateProps = {};
@@ -30,10 +36,11 @@ const Me = () => {
   const [name, setName] = useState('');
   const [skill, setSkill] = useState('');
   const [intro, setIntro] = useState('');
-
+  const [selected, setSelected] = useState(false);
   const [getDataLoading, setGetDataLoading] = useState(false);
   const doctorUuid = Taro.getStorageSync('viewDoctor');
   const patientUuid = Taro.getStorageSync('activePatient');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -60,6 +67,7 @@ const Me = () => {
           setName(res.data.data.name);
           setSkill(res.data.data.skill);
           setIntro(res.data.data.intro);
+          setSelected(res.data.data.selected);
         }
 
         setGetDataLoading(false);
@@ -71,6 +79,39 @@ const Me = () => {
       }
     })();
   }, [doctorUuid, patientUuid]);
+
+  const handleBind = async () => {
+    let res;
+    if (selected) {
+      res = await http({
+        url: DOCTOR_UNBIND,
+        method: 'POST',
+        data: {
+          doctor_uuid: doctorUuid,
+          patient_uuid: patientUuid,
+        },
+      });
+    } else {
+      res = await http({
+        url: DOCTOR_BIND,
+        method: 'POST',
+        data: {
+          doctor_uuid: doctorUuid,
+          patient_uuid: patientUuid,
+        },
+      });
+    }
+
+    if (res.statusCode === 500) {
+      Taro.atMessage({
+        message: '修改绑定医生失败',
+        type: 'error',
+      });
+    } else if (res.statusCode === 200) {
+      dispatch(changeSelectedDoctor(true));
+      Taro.navigateTo({ url: '/pages/doctor/index' });
+    }
+  };
 
   return (
     <View className="me-box">
@@ -104,7 +145,9 @@ const Me = () => {
         </View>
 
         <View className="me-item">
-          <AtButton type="primary">选择该医生</AtButton>
+          <AtButton type="primary" onClick={handleBind}>
+            {selected ? '解绑该医生' : '选择该医生'}
+          </AtButton>
         </View>
       </View>
     </View>

@@ -44,6 +44,10 @@ const Recommend = () => {
       const res = await http({
         url: PATIENT_LIST,
         method: 'GET',
+        data: {
+          page: 0,
+          limit: PATIENT_LIST_SIZE,
+        },
       });
 
       if (res.statusCode === 500) {
@@ -92,48 +96,49 @@ const Recommend = () => {
       />
       <AtMessage />
       <AtList>
-        {patientList.map((patientItem, index) =>
-          index < PATIENT_LIST_SIZE ? (
-            <AtSwipeAction
-              key={patientItem.uuid}
+        {patientList.map((patientItem) => (
+          <AtSwipeAction
+            key={patientItem.uuid}
+            onClick={(e) => {
+              if (e.text === '选择') {
+                Taro.setStorageSync('activePatient', patientItem.uuid);
+                setPatientUuid(patientItem.uuid);
+              } else {
+                Taro.setStorageSync('modifyPatient', patientItem.uuid);
+                Taro.navigateTo({
+                  url: '/pages/add-patient/index',
+                });
+              }
+            }}
+            options={[
+              {
+                text: '选择',
+                style: {
+                  backgroundColor: '#6190E8',
+                },
+              },
+              {
+                text: '修改',
+                style: {
+                  backgroundColor: '#FF4949',
+                },
+              },
+            ]}
+          >
+            <AtListItem
               onClick={(e) => {
-                if (e.text === '选择') {
-                  Taro.setStorageSync('activePatient', patientItem.uuid);
-                  setPatientUuid(patientItem.uuid);
-                } else {
-                  Taro.setStorageSync('modifyPatient', patientItem.uuid);
-                  Taro.navigateTo({
-                    url: '/pages/add-patient/index',
-                  });
-                }
+                console.log(e);
               }}
-              options={[
-                {
-                  text: '选择',
-                  style: {
-                    backgroundColor: '#6190E8',
-                  },
-                },
-                {
-                  text: '修改',
-                  style: {
-                    backgroundColor: '#FF4949',
-                  },
-                },
-              ]}
-            >
-              <AtListItem
-                title={patientItem.name}
-                arrow="right"
-                note={`电话: ${patientItem.phone}`}
-                iconInfo={{
-                  value: patientItem.uuid === patientUuid ? 'check-circle' : '',
-                  color: '#999',
-                }}
-              />
-            </AtSwipeAction>
-          ) : null
-        )}
+              title={patientItem.name}
+              arrow="right"
+              note={`电话: ${patientItem.phone}`}
+              iconInfo={{
+                value: patientItem.uuid === patientUuid ? 'check-circle' : '',
+                color: '#999',
+              }}
+            />
+          </AtSwipeAction>
+        ))}
       </AtList>
       <AtButton
         full

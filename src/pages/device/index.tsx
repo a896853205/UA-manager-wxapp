@@ -1,5 +1,6 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
-import { View, Text, Button } from '@tarojs/components';
+import { View, Button } from '@tarojs/components';
+import { useDispatch } from '@tarojs/redux';
 import {
   AtButton,
   AtMessage,
@@ -11,8 +12,10 @@ import {
   AtListItem,
   AtGrid,
   AtNoticebar,
+  AtToast,
 } from 'taro-ui';
 
+import { changeSelectedPreview } from '../../actions/preview';
 import {
   onBluetoothDeviceFound,
   openBluetoothAdapter,
@@ -42,6 +45,10 @@ const Device = () => {
   const [name, setName] = useState('');
   const [uploadData, setUploadData] = useState('');
   const [isShow, setIsShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const dispatch = useDispatch();
+
   // '1为一条,5为5条';
 
   const submit = (_uploadData: string) => {
@@ -51,6 +58,7 @@ const Device = () => {
         type: 'error',
       });
     } else {
+      setSubmitLoading(true);
       http({
         url: MEASURE_UPDATE,
         method: 'POST',
@@ -63,12 +71,13 @@ const Device = () => {
         if (res.statusCode === 500) {
           console.log('数据提交失败');
         } else if (res.statusCode === 200) {
-          Taro.setStorageSync('needFresh', true);
+          dispatch(changeSelectedPreview(true));
           Taro.atMessage({
             message: '上传数据成功',
             type: 'success',
           });
         }
+        setSubmitLoading(false);
       });
     }
   };
@@ -161,6 +170,7 @@ const Device = () => {
 
           if (hex.length === 30) {
             setUploadData(hex);
+            setLoading(false);
           }
         });
       },
@@ -227,6 +237,18 @@ const Device = () => {
   return (
     <View>
       <AtMessage />
+      <AtToast
+        isOpened={loading}
+        hasMask
+        status="loading"
+        text="测量数据加载中..."
+      />
+      <AtToast
+        isOpened={submitLoading}
+        hasMask
+        status="loading"
+        text="上传数据加载中..."
+      />
       <AtNoticebar>请确认手机是否开启蓝牙和地理获取信息</AtNoticebar>
       <AtButton
         full
@@ -266,7 +288,7 @@ const Device = () => {
       <View>
         <AtList>
           <AtListItem
-            title={`设备名${name}`}
+            title={`设备名: ${name}`}
             iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
           />
           <AtListItem
@@ -296,6 +318,17 @@ const Device = () => {
         mode="rect"
         onClick={(_item, index) => {
           if (index === 0) {
+            setTimeout(() => {
+              if (loading === true) {
+                setLoading(false);
+                Taro.atMessage({
+                  message: '获取数据失败,请确认设备是否链接正确',
+                  type: 'error',
+                });
+              }
+            }, 5000);
+
+            setLoading(true);
             writeBLECharacteristicValue(deviceId, START);
           } else {
             submit(uploadData);

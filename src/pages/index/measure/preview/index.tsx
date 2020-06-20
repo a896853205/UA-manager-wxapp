@@ -1,7 +1,8 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import { useSelector } from '@tarojs/redux';
+import { useSelector, useDispatch } from '@tarojs/redux';
 import { AtGrid, AtToast, AtMessage } from 'taro-ui';
+import { changeSelectedPreview } from '../../../../actions/preview';
 
 import {
   MEASURE_LATEST,
@@ -18,8 +19,13 @@ import doctor from '../../../../assets/icon/doctor.png';
 interface Imeasure {
   measureType: string;
 }
+
+interface Ipreview {
+  isChanged: boolean;
+}
 interface Istatus {
   measure: Imeasure;
+  preview: Ipreview;
 }
 
 const Preview = () => {
@@ -27,8 +33,9 @@ const Preview = () => {
     (state) => state.measure
   );
   const activePatientUuid = Taro.getStorageSync('activePatient');
-  const needFresh = Taro.getStorageSync('needFresh');
-
+  const { isChanged } = useSelector<Istatus, Ipreview>(
+    (state) => state.preview
+  );
   const [uric, setUric] = useState(0);
 
   const [TUric, setTUric] = useState(0);
@@ -38,6 +45,8 @@ const Preview = () => {
   const [activeDoctorLoading, setActiveDoctorLoading] = useState(true);
   const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
   const activePatient = Taro.getStorageSync('activePatient');
+  const [isNeedRefresh, setIsNeedRefresh] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -89,10 +98,10 @@ const Preview = () => {
 
       setActiveDoctorLoading(false);
     })();
-  }, [activePatient]);
+  }, [activePatient, isNeedRefresh]);
 
   useEffect(() => {
-    if (needFresh) {
+    if (isNeedRefresh) {
       (async () => {
         setGetDataLoading(true);
         const res = await http({
@@ -116,10 +125,17 @@ const Preview = () => {
           }
         }
         setGetDataLoading(false);
-        Taro.setStorageSync('needFresh', false);
+        setIsNeedRefresh(false);
       })();
     }
-  }, [needFresh]);
+  }, [isNeedRefresh]);
+
+  useEffect(() => {
+    if (isChanged) {
+      setIsNeedRefresh(true);
+      dispatch(changeSelectedPreview(false));
+    }
+  }, [isChanged, dispatch]);
 
   return (
     <View className="page">
