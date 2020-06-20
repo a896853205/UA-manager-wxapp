@@ -4,9 +4,7 @@ import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View, Picker } from '@tarojs/components';
 import { AtList, AtListItem, AtCard, AtToast, AtMessage } from 'taro-ui';
 
-import {
-  PATIENT_STAT,
-} from '../../constants/api-constants';
+import { PATIENT_STAT } from '../../constants/api-constants';
 import http from '../../util/http';
 
 import './patient-analytics.css';
@@ -26,8 +24,8 @@ const PatientAnalysis = () => {
         url: PATIENT_STAT,
         method: 'GET',
         data: {
-          days: timeSpanIndex ? 30 : 7
-        }
+          days: timeSpanIndex ? 30 : 7,
+        },
       });
 
       if (res.statusCode === 500) {
@@ -76,13 +74,14 @@ const PatientAnalysis = () => {
       </Picker>
       <View className="card-box">
         <AtCard extra="额外信息" title="患者统计">
-          {`在一周内: 一共${patientList.length}个患者`}
+          {`在${TIME_RANGE[timeSpanIndex]}内: 一共${patientList.length}个患者`}
         </AtCard>
       </View>
 
       <AtList>
         {patientList.map((patientItem) => (
           <AtListItem
+            key={patientItem.uuid}
             onClick={(e) => {
               console.log(e);
             }}
@@ -91,7 +90,7 @@ const PatientAnalysis = () => {
           />
         ))}
       </AtList>
-    </View >
+    </View>
   );
 };
 
