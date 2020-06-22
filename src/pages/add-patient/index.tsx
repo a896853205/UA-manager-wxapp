@@ -91,7 +91,7 @@ const AddPatient = () => {
         });
       } else if (res.statusCode === 200) {
         Taro.redirectTo({
-          url: '../../pages/index/index',
+          url: '../../pages/index/index?cur=1',
         });
       }
 

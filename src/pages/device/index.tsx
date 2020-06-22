@@ -255,9 +255,16 @@ const Device = () => {
         full
         type="primary"
         onClick={async () => {
-          await openBluetoothAdapter();
-          setIsShow(true);
-          startBluetoothDevicesDiscovery();
+          try {
+            await openBluetoothAdapter();
+            setIsShow(true);
+            startBluetoothDevicesDiscovery();
+          } catch (error) {
+            Taro.atMessage({
+              message: '请检查是否开启蓝牙,和开启地理位置',
+              type: 'error',
+            });
+          }
         }}
       >
         开始扫描

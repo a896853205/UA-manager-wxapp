@@ -36,7 +36,7 @@ export const onBluetoothDeviceFound = (callback) => {
 
 // 蓝牙功能开启
 export const openBluetoothAdapter = () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     Taro.openBluetoothAdapter({
       success: () => {
         resolve();
@@ -47,8 +47,11 @@ export const openBluetoothAdapter = () => {
             console.log('onBluetoothAdapterStateChange', res2);
             if (res2.available) {
               resolve();
+            } else {
+              reject();
             }
           });
+          // state: 4, errCode: 10001
         }
       },
     });

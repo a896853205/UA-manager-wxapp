@@ -146,7 +146,7 @@ const Me = () => {
           <View className="item-name">{skill}</View>
         </View>
         {selected ? null : (
-          <View className="me-item">
+          <View className="me-item" data-type="button">
             <AtButton type="primary" onClick={handleBind}>
               选择该医生
             </AtButton>
