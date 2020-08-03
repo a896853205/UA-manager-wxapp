@@ -7,6 +7,7 @@ import { changeSelectedPreview } from '../../../../actions/preview';
 import {
   MEASURE_LATEST,
   DOCTOR_ACTIVE,
+  PATIENT_DETAIL,
 } from '../../../../constants/api-constants';
 import http from '../../../../util/http';
 
@@ -46,6 +47,7 @@ const Preview = () => {
   const [activeDoctorList, setActiveDoctorList] = useState<any>([]);
   const activePatient = Taro.getStorageSync('activePatient');
   const [isNeedRefresh, setIsNeedRefresh] = useState(true);
+  const [patient, setPatient] = useState('');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -71,13 +73,29 @@ const Preview = () => {
           setSugar(res.data.data.sugar);
         }
       }
+
+      const patientInfo = await http({
+        url: PATIENT_DETAIL,
+        method: 'GET',
+        data: {
+          uuid: Taro.getStorageSync('activePatient'),
+        },
+      });
+
+      if (patientInfo.statusCode === 500) {
+        console.log('获取患者姓名失败');
+      }
+
+      if (patientInfo) {
+        setPatient(patientInfo.data.data.name);
+      };
+      
       setGetDataLoading(false);
     })();
   }, [activePatientUuid, measureType]);
 
   useEffect(() => {
     if (isNeedRefresh) {
-      console.log(isNeedRefresh);
       (async () => {
         setActiveDoctorLoading(true);
 
@@ -128,6 +146,9 @@ const Preview = () => {
       />
       {measureType === 'single' ? (
         <View className="value-preview-box">
+          <View className="measure-title">
+            <Text className="patient-name">{patient}</Text>
+          </View>
           <View className="measure-preview">
             {uric}
             <Text className="measure-unit">umol/L</Text>
@@ -139,7 +160,10 @@ const Preview = () => {
       ) : null}
       {measureType === 'triple' ? (
         <View className="value-preview-box measure-triple-preview">
-          <View className="row">连续高位</View>
+          <View className="row">
+            <Text className="patient-name">{patient}</Text>
+            <Text className="high-continue">连续高位</Text>
+          </View>
           <View className="row">
             <Text className="measure-project">尿酸</Text>
             <Text className="measure-value">
