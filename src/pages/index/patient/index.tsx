@@ -7,6 +7,7 @@ import {
   AtButton,
   AtToast,
   AtMessage,
+  AtSearchBar,
 } from 'taro-ui';
 
 import http from '../../../util/http';
@@ -36,43 +37,60 @@ const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
   const [patientUuid, setPatientUuid] = useState('');
+  const [patientName, setPatientName] = useState('');
+  const [isSearch, setIsSearch] = useState(true);
 
   useEffect(() => {
     (async () => {
-      setGetDataLoading(true);
+      if (isSearch) {
+        setGetDataLoading(true);
 
-      const res = await http({
-        url: PATIENT_LIST,
-        method: 'GET',
-        data: {
-          page: 0,
-          limit: PATIENT_LIST_SIZE,
-        },
-      });
-
-      if (res.statusCode === 500) {
-        Taro.atMessage({
-          message: '获取列表失败',
-          type: 'error',
-        });
-      } else if (res.statusCode === 200) {
-        setPatientList(res.data.data);
-
-        if (
-          res.data.data[0] &&
-          res.data.data.findIndex(
-            (item) => item.uuid === Taro.getStorageSync('activePatient')
-          ) === -1
-        ) {
-          setPatientUuid(res.data.data[0].uuid);
-        } else {
-          setPatientUuid(Taro.getStorageSync('activePatient'));
+        let data;
+        if (patientName) {
+          data = {
+            page: 0,
+            limit: PATIENT_LIST_SIZE,
+            like: patientName,
+          };
         }
-      }
+        else {
+          data = {
+            page: 0,
+            limit: PATIENT_LIST_SIZE,
+          };
+        }
 
-      setGetDataLoading(false);
+        const res = await http({
+          url: PATIENT_LIST,
+          method: 'GET',
+          data,
+        });
+
+        if (res.statusCode === 500) {
+          Taro.atMessage({
+            message: '获取列表失败',
+            type: 'error',
+          });
+        } else if (res.statusCode === 200) {
+          setPatientList(res.data.data);
+
+          if (
+            res.data.data[0] &&
+            res.data.data.findIndex(
+              (item) => item.uuid === Taro.getStorageSync('activePatient')
+            ) === -1
+          ) {
+            setPatientUuid(res.data.data[0].uuid);
+          } else {
+            setPatientUuid(Taro.getStorageSync('activePatient'));
+          }
+        }
+
+        setIsSearch(false);
+        setGetDataLoading(false);
+      }
     })();
-  }, []);
+  }, [isSearch]);
 
   useEffect(() => {
     if (patientUuid) {
@@ -95,6 +113,19 @@ const Recommend = () => {
         text="患者信息加载中..."
       />
       <AtMessage />
+      <View className="doctor-search-box">
+        <AtSearchBar
+          value={patientName}
+          onChange={(e) => {
+            setPatientName(e);
+          }}
+          onActionClick={() => { setIsSearch(true) }}
+          onClear={() => {
+            setPatientName('');
+            setIsSearch(true);
+          }}
+        />
+      </View>
       <AtList>
         {patientList.map((patientItem) => (
           <AtSwipeAction

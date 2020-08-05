@@ -8,6 +8,14 @@
   box-shadow: 0 0 50rpx #bbb;
 }
 
+.value-preview-box > .measure-title {
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  color: #666;
+  font-size: 0.8rem;
+  padding: 10rpx 20rpx ;
+}
+
 .value-preview-box > .measure-preview {
   color: rgb(255, 107, 132);
   font-size: 6rem;
@@ -35,11 +43,11 @@
 }
 
 .measure-triple-preview > .row:first-child {
-  text-align: right;
-  display: block;
+  display: flex;
+  justify-content: space-between;
   color: #666;
   font-size: 0.8rem;
-  padding-right: 20rpx;
+  padding: 10rpx 20rpx;
 }
 
 .value-num {
