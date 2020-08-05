@@ -1,6 +1,13 @@
 import Taro, { memo, useState, useEffect } from '@tarojs/taro';
 import { View, Picker } from '@tarojs/components';
-import { AtInput, AtButton, AtMessage, AtForm, AtToast, AtListItem } from 'taro-ui';
+import {
+  AtInput,
+  AtButton,
+  AtMessage,
+  AtForm,
+  AtToast,
+  AtListItem,
+} from 'taro-ui';
 
 import {
   PATIENT_DETAIL,
@@ -8,6 +15,7 @@ import {
   PATIENT_UPDATE,
 } from '../../constants/api-constants';
 import http from '../../util/http';
+import TaroRegionPicker from '../../util/taro-region-picker';
 
 const GENDER_SELECT = ['男', '女'];
 
@@ -21,8 +29,13 @@ const AddPatient = () => {
   const [relativePhone, setRelativePhone] = useState('');
   const [saveDataLoading, setSaveDataLoading] = useState(false);
   const [getDataLoading, setGetDataLoading] = useState(false);
-  const patientUuid = Taro.getStorageSync('modifyPatient');
   const [gender, setGender] = useState(0);
+
+  const [district, setDistrict] = useState('');
+  const [city, setCity] = useState('');
+  const [province, setProvince] = useState('');
+
+  const patientUuid = Taro.getStorageSync('modifyPatient');
 
   useEffect(() => {
     (async () => {
@@ -67,6 +80,9 @@ const AddPatient = () => {
         relative_name: relativeName,
         relative_relation: relativeRelation,
         relative_phone: relativePhone,
+        district,
+        city,
+        province,
       };
 
       if (patientUuid) {
@@ -203,6 +219,16 @@ const AddPatient = () => {
           value={relativePhone}
           onChange={(e) => {
             setRelativePhone(`${e}`);
+          }}
+        />
+        <TaroRegionPicker
+          style={{ textAlign: 'left', borderTop: 0 }}
+          onGetRegion={(region) => {
+            const re = region.split(' - ');
+            setDistrict(re[2]);
+            setCity(re[1]);
+            setProvince(re[0]);
+            console.log(re);
           }}
         />
 

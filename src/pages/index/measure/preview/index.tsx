@@ -12,8 +12,8 @@ import http from '../../../../util/http';
 
 // icon
 import './preview.css';
-// import refresh from '../../../../assets/icon/refresh.png';
-import config from '../../../../assets/icon/config.png';
+import refresh from '../../../../assets/icon/refresh.png';
+// import config from '../../../../assets/icon/config.png';
 import doctor from '../../../../assets/icon/doctor.png';
 
 interface Imeasure {
@@ -210,7 +210,7 @@ const Preview = () => {
           //   value: '数据详情',
           // },
           {
-            image: config,
+            image: refresh,
             value: '同步数据',
           },
           {
