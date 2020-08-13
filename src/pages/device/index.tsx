@@ -61,6 +61,7 @@ class Device {
     });
   };
 
+  // 判断该设备是否有serviceId
   getBLEDeviceService = (serviceId: string) => {
     return new Promise((resolve, reject) => {
       Taro.getBLEDeviceServices({
@@ -77,6 +78,61 @@ class Device {
           resolve(false);
         },
       });
+    });
+  };
+
+  getBLEDeviceCharacteristic = async (
+    serviceId: string,
+    rxd: string,
+    callBack: Function
+  ) => {
+    console.log(this.deviceId, serviceId);
+
+    await Taro.getBLEDeviceCharacteristics({
+      deviceId: this.deviceId,
+      serviceId: serviceId,
+    });
+
+    // 监听RXD
+    Taro.notifyBLECharacteristicValueChange({
+      state: true,
+      deviceId: this.deviceId,
+      serviceId: serviceId,
+      characteristicId: rxd,
+      success() {
+        console.log(`已监听服务: ${serviceId}的RXD: ${rxd}`);
+
+        // 操作之前先监听，保证第一时间获取数据
+        Taro.onBLECharacteristicValueChange((characteristic) => {
+          callBack(characteristic);
+        });
+      },
+      fail(_res) {
+        console.log('noteFail', _res);
+      },
+    });
+  };
+
+  // 写数据
+  writeBLECharacteristicValue = (hex: string) => {
+    // 16进制转buffer
+    const buffer = hex2buffer(hex);
+
+    console.log(
+      `向设备: ${this.deviceId}的服务: ${Device.SERVICE_ID}的TXD特征值: ${Device.TXD}写入: ${hex}`
+    );
+
+    Taro.writeBLECharacteristicValue({
+      deviceId: this.deviceId,
+      serviceId: Device.SERVICE_ID,
+      characteristicId: Device.TXD,
+      value: buffer,
+      success() {
+        console.log('写数据成功');
+      },
+      fail(err) {
+        console.log('fail', err);
+      },
     });
   };
 }
@@ -159,77 +215,6 @@ const DeviceComponent = () => {
     });
   };
 
-  // 写数据
-  const writeBLECharacteristicValue = (device: Device, hex: string) => {
-    // 16进制转buffer
-    const buffer = hex2buffer(hex);
-
-    console.log(
-      `向设备: ${device.deviceId}的服务: ${Device.SERVICE_ID}的TXD特征值: ${Device.TXD}写入: ${hex}`
-    );
-
-    Taro.writeBLECharacteristicValue({
-      deviceId: device.deviceId,
-      serviceId: Device.SERVICE_ID,
-      characteristicId: Device.TXD,
-      value: buffer,
-      success() {
-        console.log('写数据成功');
-      },
-      fail(err) {
-        console.log('fail', err);
-      },
-    });
-  };
-
-  const getBLEDeviceCharacteristic = async (
-    device: Device,
-    serviceId: string,
-    rxd: string
-  ) => {
-    console.log(device.deviceId, serviceId);
-    await Taro.getBLEDeviceCharacteristics({
-      deviceId: device.deviceId,
-      serviceId: serviceId,
-    });
-
-    // 监听RXD
-    Taro.notifyBLECharacteristicValueChange({
-      state: true,
-      deviceId: device.deviceId,
-      serviceId: serviceId,
-      characteristicId: rxd,
-      success() {
-        console.log(`已监听服务: ${serviceId}的RXD: ${rxd}`);
-
-        // 操作之前先监听，保证第一时间获取数据
-        Taro.onBLECharacteristicValueChange((characteristic) => {
-          console.log(
-            `设备的: ${
-              device.deviceId
-            }的服务: ${serviceId}的RXD特征值: ${rxd}读取到: ${buf2hex(
-              characteristic.value
-            )}`
-          );
-
-          const hex = buf2hex(characteristic.value);
-
-          if (hex === '7b01ff007df8') {
-            writeBLECharacteristicValue(device, '7b00A0017d');
-          }
-
-          if (hex.length === 30) {
-            setUploadData(hex);
-            setLoading(false);
-          }
-        });
-      },
-      fail(_res) {
-        console.log('noteFail', _res);
-      },
-    });
-  };
-
   const closeBluetoothAdapter = () => {
     Taro.closeBluetoothAdapter();
     setDiscoveryStarted(false);
@@ -295,10 +280,29 @@ const DeviceComponent = () => {
                     );
 
                     if (hasService) {
-                      getBLEDeviceCharacteristic(
-                        item,
+                      item.getBLEDeviceCharacteristic(
                         Device.SERVICE_ID,
-                        Device.RXD
+                        Device.RXD,
+                        (characteristic) => {
+                          console.log(
+                            `设备的: ${this.deviceId}的服务: ${
+                              Device.SERVICE_ID
+                            }的RXD特征值: ${Device.RXD}读取到: ${buf2hex(
+                              characteristic.value
+                            )}`
+                          );
+
+                          const hex = buf2hex(characteristic.value);
+
+                          if (hex === '7b01ff007df8') {
+                            this.writeBLECharacteristicValue('7b00A0017d');
+                          }
+
+                          if (hex.length === 30) {
+                            setUploadData(hex);
+                            setLoading(false);
+                          }
+                        }
                       );
                     }
                     stopBluetoothDevicesDiscovery();
@@ -358,7 +362,7 @@ const DeviceComponent = () => {
 
             setLoading(true);
             if (selectedDevice) {
-              writeBLECharacteristicValue(selectedDevice, Device.START);
+              selectedDevice.writeBLECharacteristicValue(Device.START);
             }
           } else {
             submit(uploadData);
