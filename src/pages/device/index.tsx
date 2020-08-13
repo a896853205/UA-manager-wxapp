@@ -27,22 +27,32 @@ import { UXSingleData } from './util/data2UXData';
 import http from '../../util/http';
 import { MEASURE_UPDATE } from '../../constants/api-constants';
 
-const SERVICE_ID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
-// 写入
-const TXD = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
-// 读取
-const RXD = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
+class Device {
+  // 设备Id
+  static SERVICE_ID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
+  // 写入特征值
+  static TXD = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
+  // 读取特征值
+  static RXD = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
+  // 初始指令
+  static START = '7b00FF7d0011';
 
-const START = '7b00FF7d0011';
+  deviceId: string;
+  name: string;
+  localName: string;
 
-const Device = () => {
+  constructor(deviceId: string, name: string, localName: string) {
+    this.deviceId = deviceId;
+    this.name = name;
+    this.localName = localName;
+  }
+}
+
+const DeviceComponent = () => {
   const [discoveryStarted, setDiscoveryStarted] = useState(false);
-  const [devices, setDevices] = useState<
-    Taro.onBluetoothDeviceFound.CallbackResultBlueToothDevice[]
-  >([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
-  const [deviceId, setDeviceId] = useState('');
-  const [name, setName] = useState('');
+  const [selectedDevice, setSelectedDevice] = useState<Device>();
   const [uploadData, setUploadData] = useState('');
   const [isShow, setIsShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -103,10 +113,10 @@ const Device = () => {
               (item) => item.deviceId === device.deviceId
             );
 
-            // const idx = inArray(devices, 'deviceId', device.deviceId);
-
             if (idx === -1) {
-              devices.push(device);
+              devices.push(
+                new Device(device.deviceId, device.name, device.localName)
+              );
             }
 
             setDevices([...devices]);
@@ -117,18 +127,18 @@ const Device = () => {
   };
 
   // 写数据
-  const writeBLECharacteristicValue = (_deviceId: string, hex: string) => {
+  const writeBLECharacteristicValue = (device: Device, hex: string) => {
     // 16进制转buffer
     const buffer = hex2buffer(hex);
 
     console.log(
-      `向设备: ${_deviceId}的服务: ${SERVICE_ID}的TXD特征值: ${TXD}写入: ${hex}`
+      `向设备: ${device.deviceId}的服务: ${Device.SERVICE_ID}的TXD特征值: ${Device.TXD}写入: ${hex}`
     );
 
     Taro.writeBLECharacteristicValue({
-      deviceId: _deviceId,
-      serviceId: SERVICE_ID,
-      characteristicId: TXD,
+      deviceId: device.deviceId,
+      serviceId: Device.SERVICE_ID,
+      characteristicId: Device.TXD,
       value: buffer,
       success() {
         console.log('写数据成功');
@@ -139,26 +149,32 @@ const Device = () => {
     });
   };
 
-  const getBLEDeviceCharacteristics = async (_deviceId, serviceId) => {
-    console.log(_deviceId, serviceId);
+  const getBLEDeviceCharacteristic = async (
+    device: Device,
+    serviceId: string,
+    rxd: string
+  ) => {
+    console.log(device.deviceId, serviceId);
     await Taro.getBLEDeviceCharacteristics({
-      deviceId: _deviceId,
+      deviceId: device.deviceId,
       serviceId: serviceId,
     });
 
     // 监听RXD
     Taro.notifyBLECharacteristicValueChange({
       state: true,
-      deviceId: _deviceId,
+      deviceId: device.deviceId,
       serviceId: serviceId,
-      characteristicId: RXD,
+      characteristicId: rxd,
       success() {
-        console.log(`已监听服务: ${serviceId}的RXD: ${RXD}`);
+        console.log(`已监听服务: ${serviceId}的RXD: ${rxd}`);
 
         // 操作之前先监听，保证第一时间获取数据
         Taro.onBLECharacteristicValueChange((characteristic) => {
           console.log(
-            `设备的: ${_deviceId}的服务: ${SERVICE_ID}的RXD特征值: ${RXD}读取到: ${buf2hex(
+            `设备的: ${
+              device.deviceId
+            }的服务: ${serviceId}的RXD特征值: ${rxd}读取到: ${buf2hex(
               characteristic.value
             )}`
           );
@@ -166,7 +182,7 @@ const Device = () => {
           const hex = buf2hex(characteristic.value);
 
           if (hex === '7b01ff007df8') {
-            writeBLECharacteristicValue(_deviceId, '7b00A0017d');
+            writeBLECharacteristicValue(device, '7b00A0017d');
           }
 
           if (hex.length === 30) {
@@ -182,16 +198,17 @@ const Device = () => {
   };
 
   // 获取指定蓝牙设备的服务
-  const getBLEDeviceServices = (_deviceId) => {
+  const getBLEDeviceService = (device: Device, serviceId: string) => {
     return new Promise((resolve, reject) => {
       Taro.getBLEDeviceServices({
-        deviceId: _deviceId,
+        deviceId: device.deviceId,
         success: (res) => {
           console.log(res.services);
+
           for (let i = 0; i < res.services.length; i++) {
             // 如果有指定服务就读取特征值信息
-            if (res.services[i].uuid === SERVICE_ID) {
-              getBLEDeviceCharacteristics(_deviceId, SERVICE_ID);
+            if (res.services[i].uuid === serviceId) {
+              getBLEDeviceCharacteristic(device, serviceId, Device.RXD);
               resolve();
             }
           }
@@ -202,26 +219,19 @@ const Device = () => {
   };
 
   // 与蓝牙设备链接
-  const createBLEConnection = (_deviceId: string, _name: string) => {
-    console.log('createBLEConnection', _deviceId);
+  const createBLEConnection = (device: Device) => {
+    console.log('createBLEConnection', device.deviceId);
 
     return new Promise((resolve, reject) => {
       Taro.createBLEConnection({
-        deviceId: _deviceId,
+        deviceId: device.deviceId,
         success: () => {
-          setDeviceId(_deviceId);
-          setName(_name);
+          setSelectedDevice(device);
           resolve();
         },
       });
     });
   };
-
-  // const closeBLEConnection = () => {
-  //   Taro.closeBLEConnection({
-  //     deviceId: deviceId,
-  //   });
-  // };
 
   const closeBluetoothAdapter = () => {
     Taro.closeBluetoothAdapter();
@@ -273,14 +283,14 @@ const Device = () => {
         <AtModalHeader>已扫描到的蓝牙</AtModalHeader>
         <AtModalContent>
           <AtList>
-            {devices.map((item) => {
+            {devices.map((item: Device) => {
               return (
                 <AtListItem
                   key={item.deviceId}
                   title={item.name}
                   onClick={async () => {
-                    await createBLEConnection(item.deviceId, item.name);
-                    await getBLEDeviceServices(item.deviceId);
+                    await createBLEConnection(item);
+                    await getBLEDeviceService(item, Device.SERVICE_ID);
                     stopBluetoothDevicesDiscovery();
                     setIsShow(false);
                   }}
@@ -296,7 +306,7 @@ const Device = () => {
       <View>
         <AtList>
           <AtListItem
-            title={`设备名: ${name}`}
+            title={`设备名: ${selectedDevice?.name}`}
             iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
           />
           <AtListItem
@@ -337,7 +347,9 @@ const Device = () => {
             }, 5000);
 
             setLoading(true);
-            writeBLECharacteristicValue(deviceId, START);
+            if (selectedDevice) {
+              writeBLECharacteristicValue(selectedDevice, Device.START);
+            }
           } else {
             submit(uploadData);
           }
@@ -355,4 +367,4 @@ const Device = () => {
   );
 };
 
-export default memo(Device);
+export default memo(DeviceComponent);
