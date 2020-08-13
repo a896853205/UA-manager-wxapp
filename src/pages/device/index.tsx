@@ -46,6 +46,39 @@ class Device {
     this.name = name;
     this.localName = localName;
   }
+
+  // 与蓝牙设备链接
+  createBLEConnection = () => {
+    console.log('createBLEConnection', this.deviceId);
+
+    return new Promise((resolve, reject) => {
+      Taro.createBLEConnection({
+        deviceId: this.deviceId,
+        success: () => {
+          resolve(this);
+        },
+      });
+    });
+  };
+
+  getBLEDeviceService = (serviceId: string) => {
+    return new Promise((resolve, reject) => {
+      Taro.getBLEDeviceServices({
+        deviceId: this.deviceId,
+        success: (res) => {
+          console.log(res.services);
+
+          for (let i = 0; i < res.services.length; i++) {
+            // 如果有指定服务就读取特征值信息
+            if (res.services[i].uuid === serviceId) {
+              resolve(true);
+            }
+          }
+          resolve(false);
+        },
+      });
+    });
+  };
 }
 
 const DeviceComponent = () => {
@@ -197,42 +230,6 @@ const DeviceComponent = () => {
     });
   };
 
-  // 获取指定蓝牙设备的服务
-  const getBLEDeviceService = (device: Device, serviceId: string) => {
-    return new Promise((resolve, reject) => {
-      Taro.getBLEDeviceServices({
-        deviceId: device.deviceId,
-        success: (res) => {
-          console.log(res.services);
-
-          for (let i = 0; i < res.services.length; i++) {
-            // 如果有指定服务就读取特征值信息
-            if (res.services[i].uuid === serviceId) {
-              getBLEDeviceCharacteristic(device, serviceId, Device.RXD);
-              resolve();
-            }
-          }
-          resolve();
-        },
-      });
-    });
-  };
-
-  // 与蓝牙设备链接
-  const createBLEConnection = (device: Device) => {
-    console.log('createBLEConnection', device.deviceId);
-
-    return new Promise((resolve, reject) => {
-      Taro.createBLEConnection({
-        deviceId: device.deviceId,
-        success: () => {
-          setSelectedDevice(device);
-          resolve();
-        },
-      });
-    });
-  };
-
   const closeBluetoothAdapter = () => {
     Taro.closeBluetoothAdapter();
     setDiscoveryStarted(false);
@@ -289,8 +286,21 @@ const DeviceComponent = () => {
                   key={item.deviceId}
                   title={item.name}
                   onClick={async () => {
-                    await createBLEConnection(item);
-                    await getBLEDeviceService(item, Device.SERVICE_ID);
+                    await item.createBLEConnection();
+
+                    setSelectedDevice(item);
+
+                    const hasService = await item.getBLEDeviceService(
+                      Device.SERVICE_ID
+                    );
+
+                    if (hasService) {
+                      getBLEDeviceCharacteristic(
+                        item,
+                        Device.SERVICE_ID,
+                        Device.RXD
+                      );
+                    }
                     stopBluetoothDevicesDiscovery();
                     setIsShow(false);
                   }}
