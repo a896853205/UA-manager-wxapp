@@ -3,6 +3,7 @@ import { View, Picker } from '@tarojs/components';
 import { useSelector } from '@tarojs/redux';
 
 import { AtButton, AtInput, AtList, AtListItem } from 'taro-ui';
+
 interface IMeasure {
   measureType: string;
 }
@@ -23,7 +24,7 @@ const SaveData = () => {
             title="尿酸值"
             type="number"
             placeholder="请输入尿酸值"
-            value={'352'}
+            value="352"
             onChange={() => {}}
           />
 
@@ -47,7 +48,7 @@ const SaveData = () => {
             </AtList>
           </Picker>
 
-          <AtButton type="primary" full={true}>
+          <AtButton type="primary" full>
             保存
           </AtButton>
         </View>
@@ -99,7 +100,7 @@ const SaveData = () => {
             </AtList>
           </Picker>
 
-          <AtButton type="primary" full={true}>
+          <AtButton type="primary" full>
             保存
           </AtButton>
         </View>

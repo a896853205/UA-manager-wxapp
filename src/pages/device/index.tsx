@@ -145,11 +145,96 @@ const DeviceComponent = () => {
   const [uploadData, setUploadData] = useState('');
   const [isShow, setIsShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const [reLoading, setReLoading] = useState(false);
+  const [loadText, setLoadText] = useState('');
   const dispatch = useDispatch();
 
-  // '1为一条,5为5条';
+  const selectOneDevice = async (device: Device) => {
+    await device.createBLEConnection();
 
+    Taro.setStorageSync('selectedDevice', device);
+
+    setSelectedDevice(device);
+
+    const hasService = await device.getBLEDeviceService(Device.SERVICE_ID);
+
+    if (hasService) {
+      device.getBLEDeviceCharacteristic(
+        Device.SERVICE_ID,
+        Device.RXD,
+        (characteristic) => {
+          console.log(
+            `设备的: ${device.deviceId}的服务: ${
+              Device.SERVICE_ID
+            }的RXD特征值: ${Device.RXD}读取到: ${buf2hex(characteristic.value)}`
+          );
+
+          const hex = buf2hex(characteristic.value);
+
+          if (hex === '7b01ff007df8') {
+            device.writeBLECharacteristicValue('7b00A0017d');
+          }
+
+          if (hex.length === 30) {
+            setUploadData(hex);
+            setLoading(false);
+          }
+        }
+      );
+    }
+    stopBluetoothDevicesDiscovery();
+    setIsShow(false);
+  };
+  // 页面加载的时候看localStorage里有没有,有的话就调用有的
+  useEffect(() => {
+    const device: Device = Taro.getStorageSync('selectedDevice');
+
+    console.log(device);
+
+    if (!device) {
+      return;
+    } else {
+      (async () => {
+        setLoadText('重新连接蓝牙中...');
+        setLoading(true);
+
+        const timer = setTimeout(() => {
+          stopBluetoothDevicesDiscovery();
+          setLoading(false);
+        }, 5000);
+
+        await openBluetoothAdapter();
+
+        // 搜索蓝牙设备
+        Taro.startBluetoothDevicesDiscovery({
+          allowDuplicatesKey: true,
+          success: async () => {
+            onBluetoothDeviceFound((res) => {
+              res.devices.forEach((findDevice) => {
+                if (!device.name && !device.localName) {
+                  return;
+                }
+
+                if (
+                  findDevice.deviceId === device.deviceId &&
+                  findDevice.name === device.name
+                ) {
+                  clearTimeout(timer);
+                  setLoading(false);
+
+                  selectOneDevice(
+                    new Device(device.deviceId, device.name, device.localName)
+                  );
+                }
+              });
+            });
+          },
+        });
+      })();
+    }
+  }, []);
+
+  // '1为一条,5为5条';
   const submit = (_uploadData: string) => {
     if (_uploadData === '') {
       Taro.atMessage({
@@ -157,13 +242,14 @@ const DeviceComponent = () => {
         type: 'error',
       });
     } else {
-      setSubmitLoading(true);
+      setLoadText('上传数据加载中...');
+      setLoading(true);
       http({
         url: MEASURE_UPDATE,
         method: 'POST',
         data: {
           uuid: Taro.getStorageSync('activePatient'),
-          datas: [UXSingleData(_uploadData)],
+          datas: [new UXSingleData(_uploadData)],
         },
       }).then((res) => {
         console.log(res);
@@ -177,7 +263,7 @@ const DeviceComponent = () => {
           });
           Taro.reLaunch({ url: '/pages/index/index?cur=0' });
         }
-        setSubmitLoading(false);
+        setLoading(false);
       });
     }
   };
@@ -234,13 +320,7 @@ const DeviceComponent = () => {
         isOpened={loading}
         hasMask
         status="loading"
-        text="测量数据加载中..."
-      />
-      <AtToast
-        isOpened={submitLoading}
-        hasMask
-        status="loading"
-        text="上传数据加载中..."
+        text={loadText}
       />
       <AtNoticebar>请确认手机是否开启蓝牙和地理获取信息</AtNoticebar>
       <AtButton
@@ -270,44 +350,7 @@ const DeviceComponent = () => {
                 <AtListItem
                   key={item.deviceId}
                   title={item.name}
-                  onClick={async () => {
-                    await item.createBLEConnection();
-
-                    setSelectedDevice(item);
-
-                    const hasService = await item.getBLEDeviceService(
-                      Device.SERVICE_ID
-                    );
-
-                    if (hasService) {
-                      item.getBLEDeviceCharacteristic(
-                        Device.SERVICE_ID,
-                        Device.RXD,
-                        (characteristic) => {
-                          console.log(
-                            `设备的: ${this.deviceId}的服务: ${
-                              Device.SERVICE_ID
-                            }的RXD特征值: ${Device.RXD}读取到: ${buf2hex(
-                              characteristic.value
-                            )}`
-                          );
-
-                          const hex = buf2hex(characteristic.value);
-
-                          if (hex === '7b01ff007df8') {
-                            this.writeBLECharacteristicValue('7b00A0017d');
-                          }
-
-                          if (hex.length === 30) {
-                            setUploadData(hex);
-                            setLoading(false);
-                          }
-                        }
-                      );
-                    }
-                    stopBluetoothDevicesDiscovery();
-                    setIsShow(false);
-                  }}
+                  onClick={() => selectOneDevice(item)}
                 />
               );
             })}
@@ -320,13 +363,13 @@ const DeviceComponent = () => {
       <View>
         <AtList>
           <AtListItem
-            title={`设备名: ${selectedDevice?.name}`}
+            title={`设备名: ${selectedDevice ? selectedDevice.name : ''}`}
             iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
           />
           <AtListItem
             title={
               uploadData.length === 30
-                ? `最新数值为: ${UXSingleData(uploadData).uric} μmol/L`
+                ? `最新数值为: ${new UXSingleData(uploadData).uric} μmol/L`
                 : '请获取最新数值'
             }
             iconInfo={{ size: 25, color: '#78A4FA', value: 'filter' }}
@@ -335,11 +378,7 @@ const DeviceComponent = () => {
             title={
               uploadData.length === 30
                 ? `时间为:
-                ${new Date(UXSingleData(uploadData).timestamp).getFullYear()}/${
-                    new Date(UXSingleData(uploadData).timestamp).getMonth() + 1
-                  }/${new Date(UXSingleData(uploadData).timestamp).getDate()}
-                ${new Date(UXSingleData(uploadData).timestamp).getHours()}:
-                ${new Date(UXSingleData(uploadData).timestamp).getMinutes()}`
+                ${new UXSingleData(uploadData).getTimeString()}`
                 : '请获取最新数值'
             }
             iconInfo={{ size: 25, color: '#78A4FA', value: 'clock' }}
@@ -352,7 +391,9 @@ const DeviceComponent = () => {
           if (index === 0) {
             setTimeout(() => {
               if (loading === true) {
+                setLoadText('测量数据加载中...');
                 setLoading(false);
+
                 Taro.atMessage({
                   message: '获取数据失败,请确认设备是否链接正确',
                   type: 'error',
