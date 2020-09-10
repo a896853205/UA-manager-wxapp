@@ -145,7 +145,6 @@ const DeviceComponent = () => {
   const [uploadData, setUploadData] = useState('');
   const [isShow, setIsShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [reLoading, setReLoading] = useState(false);
   const [loadText, setLoadText] = useState('');
   const dispatch = useDispatch();
 
@@ -298,12 +297,24 @@ const DeviceComponent = () => {
           });
         });
       },
+      fail: () => {
+        Taro.atMessage({
+          message: '请确认手机是否开启蓝牙和地理获取信息',
+          type: 'error',
+        });
+      },
     });
   };
 
   const closeBluetoothAdapter = () => {
     Taro.closeBluetoothAdapter();
     setDiscoveryStarted(false);
+  };
+
+  const breakBlueTeeth = () => {
+    setUploadData('');
+    setSelectedDevice(undefined);
+    closeBluetoothAdapter();
   };
 
   useEffect(() => {
@@ -316,12 +327,7 @@ const DeviceComponent = () => {
   return (
     <View>
       <AtMessage />
-      <AtToast
-        isOpened={loading}
-        hasMask
-        status="loading"
-        text={loadText}
-      />
+      <AtToast isOpened={loading} hasMask status="loading" text={loadText} />
       <AtNoticebar>请确认手机是否开启蓝牙和地理获取信息</AtNoticebar>
       <AtButton
         full
@@ -391,7 +397,6 @@ const DeviceComponent = () => {
           if (index === 0) {
             setTimeout(() => {
               if (loading === true) {
-                setLoadText('测量数据加载中...');
                 setLoading(false);
 
                 Taro.atMessage({
@@ -400,13 +405,15 @@ const DeviceComponent = () => {
                 });
               }
             }, 5000);
-
+            setLoadText('测量数据加载中...');
             setLoading(true);
             if (selectedDevice) {
               selectedDevice.writeBLECharacteristicValue(Device.START);
             }
-          } else {
+          } else if (index === 1) {
             submit(uploadData);
+          } else {
+            breakBlueTeeth();
           }
         }}
         data={[
@@ -415,6 +422,9 @@ const DeviceComponent = () => {
           },
           {
             value: '上传数据到云',
+          },
+          {
+            value: '断开蓝牙',
           },
         ]}
       />

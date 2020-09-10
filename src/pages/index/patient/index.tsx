@@ -8,6 +8,7 @@ import {
   AtToast,
   AtMessage,
   AtSearchBar,
+  AtNoticebar,
 } from 'taro-ui';
 
 import http from '../../../util/http';
@@ -106,6 +107,7 @@ const Recommend = () => {
 
   return (
     <View>
+      <AtNoticebar>左滑选择或修改患者</AtNoticebar>
       <AtToast
         isOpened={getDataLoading}
         hasMask

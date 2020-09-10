@@ -36,8 +36,9 @@
 }
 
 .measure-triple-preview > .row {
+  padding: 0 40rpx;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: baseline;
   border-bottom: 1px solid #ddd;
 }

@@ -30,6 +30,7 @@ const AddPatient = () => {
   const [saveDataLoading, setSaveDataLoading] = useState(false);
   const [getDataLoading, setGetDataLoading] = useState(false);
   const [gender, setGender] = useState(0);
+  const [region, setRegion] = useState('');
 
   const [district, setDistrict] = useState('');
   const [city, setCity] = useState('');
@@ -59,6 +60,9 @@ const AddPatient = () => {
           setRelativeName(res.data.data.relative_name);
           setRelativeRelation(res.data.data.relative_relation);
           setRelativePhone(res.data.data.relative_phone);
+          setRegion(
+            `${res.data.data.province} - ${res.data.data.city} - ${res.data.data.district}`
+          );
         }
 
         setGetDataLoading(false);
@@ -138,6 +142,7 @@ const AddPatient = () => {
       <AtMessage />
       <AtForm onSubmit={submit}>
         <AtInput
+          required
           name="name"
           title="姓名"
           type="text"
@@ -156,12 +161,13 @@ const AddPatient = () => {
           value={gender}
         >
           <AtListItem
-            title="性别："
+            title=" * 性别"
             extraText={GENDER_SELECT[gender - 1]}
             arrow="right"
           />
         </Picker>
         <AtInput
+          required
           name="phone"
           title="手机号"
           type="number"
@@ -172,6 +178,7 @@ const AddPatient = () => {
           }}
         />
         <AtInput
+          required
           name="identity"
           title="身份证号"
           type="text"
@@ -223,6 +230,7 @@ const AddPatient = () => {
         />
         <TaroRegionPicker
           style={{ textAlign: 'left', borderTop: 0 }}
+          regionSelf={region}
           onGetRegion={(region) => {
             const re = region.split(' - ');
             setDistrict(re[2]);

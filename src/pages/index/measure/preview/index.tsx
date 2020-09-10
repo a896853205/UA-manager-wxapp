@@ -48,6 +48,12 @@ const Preview = () => {
   const activePatient = Taro.getStorageSync('activePatient');
   const [isNeedRefresh, setIsNeedRefresh] = useState(true);
   const [patient, setPatient] = useState('');
+
+  const [uricLast, setUricLast] = useState(0);
+  const [TUircLast, setTUircLast] = useState(0);
+  const [fatLast, setFatLast] = useState(0);
+  const [sugarLast, setSugarLast] = useState(0);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -66,11 +72,15 @@ const Preview = () => {
         console.log('获取基本数据失败');
       } else if (res.statusCode === 200) {
         if (measureType === 'single') {
-          setUric(res.data.data.uric);
+          setUric(res.data.data.measure.uric);
+          setUricLast(res.data.data.last.uric);
         } else if (measureType === 'triple') {
-          setTUric(res.data.data.uric);
+          setTUric(res.data.data.measure.uric);
+          setTUircLast(res.data.data.last.uric);
           setFat(res.data.data.fat);
-          setSugar(res.data.data.sugar);
+          setFatLast(res.data.data.last.uric);
+          setSugar(res.data.data.measure.sugar);
+          setSugarLast(res.data.data.last.uric);
         }
       }
 
@@ -88,8 +98,8 @@ const Preview = () => {
 
       if (patientInfo) {
         setPatient(patientInfo.data.data.name);
-      };
-      
+      }
+
       setGetDataLoading(false);
     })();
   }, [activePatientUuid, measureType]);
@@ -154,7 +164,7 @@ const Preview = () => {
             <Text className="measure-unit">umol/L</Text>
           </View>
           <View className="measure-description">
-            连续<Text className="day">10</Text>天高于目标值
+            连续<Text className="day">{uricLast}</Text>天高于目标值
           </View>
         </View>
       ) : null}
@@ -171,7 +181,7 @@ const Preview = () => {
               <Text className="measure-unit">umol/L</Text>
             </Text>
             <Text>
-              <Text className="day">10</Text>天
+              <Text className="day">{TUircLast}</Text>天
             </Text>
           </View>
           <View className="row">
@@ -181,7 +191,7 @@ const Preview = () => {
               <Text className="measure-unit">mmol/L</Text>
             </Text>
             <Text>
-              <Text className="day">10</Text>天
+              <Text className="day">{fatLast}</Text>天
             </Text>
           </View>
           <View className="row">
@@ -191,7 +201,7 @@ const Preview = () => {
               <Text className="measure-unit">mmol/L</Text>
             </Text>
             <Text>
-              <Text className="day">10</Text>天
+              <Text className="day">{sugarLast}</Text>天
             </Text>
           </View>
         </View>
