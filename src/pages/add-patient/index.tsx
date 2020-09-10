@@ -8,6 +8,7 @@ import {
   AtToast,
   AtListItem,
 } from 'taro-ui';
+import { useDispatch } from '@tarojs/redux';
 
 import {
   PATIENT_DETAIL,
@@ -16,6 +17,7 @@ import {
 } from '../../constants/api-constants';
 import http from '../../util/http';
 import TaroRegionPicker from '../../util/taro-region-picker';
+import { addPatient } from '../../actions/add-patient';
 
 const GENDER_SELECT = ['男', '女'];
 
@@ -37,6 +39,7 @@ const AddPatient = () => {
   const [province, setProvince] = useState('');
 
   const patientUuid = Taro.getStorageSync('modifyPatient');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -60,9 +63,11 @@ const AddPatient = () => {
           setRelativeName(res.data.data.relative_name);
           setRelativeRelation(res.data.data.relative_relation);
           setRelativePhone(res.data.data.relative_phone);
-          setRegion(
-            `${res.data.data.province} - ${res.data.data.city} - ${res.data.data.district}`
-          );
+          if (res.data.data.province) {
+            setRegion(
+              `${res.data.data.province} - ${res.data.data.city} - ${res.data.data.district}`
+            );
+          };
         }
 
         setGetDataLoading(false);
@@ -114,9 +119,11 @@ const AddPatient = () => {
           type: 'error',
         });
       } else if (res.statusCode === 200) {
-        Taro.redirectTo({
-          url: '../../pages/index/index?cur=1',
-        });
+        dispatch(addPatient(true));
+        Taro.navigateBack({});
+        // Taro.redirectTo({
+        //   url: '../../pages/index/index?cur=1',
+        // });
       }
 
       setSaveDataLoading(false);

@@ -13,6 +13,8 @@ import {
 
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
+import { useSelector, useDispatch } from '@tarojs/redux';
+import { addPatient} from '../../../actions/add-patient';
 
 // #region 书写注意
 //
@@ -34,12 +36,23 @@ interface Recommend {
   props: IProps;
 }
 
+interface IAdd {
+  isAdded: boolean;
+}
+interface Istatus {
+  addPatient: IAdd;
+}
+
 const Recommend = () => {
   const [patientList, setPatientList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
   const [patientUuid, setPatientUuid] = useState('');
   const [patientName, setPatientName] = useState('');
   const [isSearch, setIsSearch] = useState(true);
+  const { isAdded } = useSelector<Istatus, IAdd>(
+    (state) => state.addPatient
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -92,6 +105,13 @@ const Recommend = () => {
       }
     })();
   }, [isSearch]);
+
+  useEffect(() => {
+    if (isAdded) {
+      setIsSearch(true);
+      dispatch(addPatient(false));
+    }
+  }, [isAdded, dispatch]);
 
   useEffect(() => {
     if (patientUuid) {
