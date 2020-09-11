@@ -11,6 +11,7 @@ import {
   AtNoticebar,
 } from 'taro-ui';
 
+import './patient.css';
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
 import { useSelector, useDispatch } from '@tarojs/redux';
@@ -26,7 +27,7 @@ import { addPatient } from '../../../actions/add-patient';
 //
 // #endregion
 
-const PATIENT_LIST_SIZE = 5;
+const PATIENT_LIST_SIZE = 99999;
 
 type PageStateProps = {};
 
@@ -133,7 +134,7 @@ const Recommend = () => {
   }, []);
 
   return (
-    <View>
+    <View className="patient-box">
       <AtNoticebar>{"左滑->选择患者或修改患者信息"}</AtNoticebar>
       <AtToast
         isOpened={getDataLoading}
@@ -142,6 +143,16 @@ const Recommend = () => {
         text="患者信息加载中..."
       />
       <AtMessage />
+      <AtButton
+        full
+        type="primary"
+        onClick={() => {
+          Taro.removeStorageSync('modifyPatient');
+          Taro.navigateTo({ url: '/pages/add-patient/index' });
+        }}
+      >
+        添加患者
+      </AtButton>
       <View className="doctor-search-box">
         <AtSearchBar
           value={patientName}
@@ -200,16 +211,6 @@ const Recommend = () => {
           </AtSwipeAction>
         ))}
       </AtList>
-      <AtButton
-        full
-        type="primary"
-        onClick={() => {
-          Taro.removeStorageSync('modifyPatient');
-          Taro.navigateTo({ url: '/pages/add-patient/index' });
-        }}
-      >
-        添加患者
-      </AtButton>
     </View>
   );
 };
