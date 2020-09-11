@@ -18,7 +18,7 @@ interface Istatus {
   doctor: Idoctor;
 }
 
-const DOCTOR_LIST_SIZE = 5;
+const DOCTOR_LIST_SIZE = 99999;
 
 const Doctor = () => {
   /**
