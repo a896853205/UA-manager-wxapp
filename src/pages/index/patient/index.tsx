@@ -14,7 +14,7 @@ import {
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
 import { useSelector, useDispatch } from '@tarojs/redux';
-import { addPatient} from '../../../actions/add-patient';
+import { addPatient } from '../../../actions/add-patient';
 
 // #region 书写注意
 //
@@ -48,6 +48,7 @@ const Recommend = () => {
   const [getDataLoading, setGetDataLoading] = useState(true);
   const [patientUuid, setPatientUuid] = useState('');
   const [patientName, setPatientName] = useState('');
+  const [added, setAdded] = useState(false);
   const [isSearch, setIsSearch] = useState(true);
   const { isAdded } = useSelector<Istatus, IAdd>(
     (state) => state.addPatient
@@ -88,6 +89,11 @@ const Recommend = () => {
         } else if (res.statusCode === 200) {
           setPatientList(res.data.data);
 
+          if (added) {
+            Taro.setStorageSync('activePatient', res.data.data[0].uuid);
+            setAdded(false);
+          }
+
           if (
             res.data.data[0] &&
             res.data.data.findIndex(
@@ -109,6 +115,7 @@ const Recommend = () => {
   useEffect(() => {
     if (isAdded) {
       setIsSearch(true);
+      setAdded(true);
       dispatch(addPatient(false));
     }
   }, [isAdded, dispatch]);
@@ -127,7 +134,7 @@ const Recommend = () => {
 
   return (
     <View>
-      <AtNoticebar>左滑选择或修改患者</AtNoticebar>
+      <AtNoticebar>{"左滑->选择患者或修改患者信息"}</AtNoticebar>
       <AtToast
         isOpened={getDataLoading}
         hasMask
