@@ -8,16 +8,14 @@ import {
   AtToast,
   AtMessage,
   AtSearchBar,
-  AtNoticebar,
 } from 'taro-ui';
 import { useSelector, useDispatch } from '@tarojs/redux';
 
 import './patient.css';
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
-
 import { addPatient } from '../../../actions/add-patient';
-import PersonList from './list';
+import PersonList, { Person, PersonListData } from './components/list';
 
 // #region 书写注意
 //
@@ -47,14 +45,15 @@ interface Istatus {
 }
 
 const Recommend = () => {
-  const [personList, setPersonList] = useState<any>([]);
+  const [personList, setPersonList] = useState<PersonListData>();
   const [getDataLoading, setGetDataLoading] = useState(true);
-  const [patientUuid, setPatientUuid] = useState('');
+  // const [patientUuid, setPatientUuid] = useState('');
   const [patientName, setPatientName] = useState('');
-  const [added, setAdded] = useState(false);
   const [isSearch, setIsSearch] = useState(true);
   const { isAdded } = useSelector<Istatus, IAdd>((state) => state.addPatient);
   const dispatch = useDispatch();
+
+  console.log(isAdded);
 
   useEffect(() => {
     (async () => {
@@ -87,12 +86,11 @@ const Recommend = () => {
             type: 'error',
           });
         } else if (res.statusCode === 200) {
-          setPersonList(res.data.data);
+          const paientListData = res.data.data.map(
+            (patient) => new Person(patient.uuid, patient.name, patient.phone)
+          );
 
-          if (added) {
-            Taro.setStorageSync('activePatient', res.data.data[0].uuid);
-            setAdded(false);
-          }
+          const paientList = new PersonListData(paientListData);
 
           if (
             res.data.data[0] &&
@@ -100,9 +98,14 @@ const Recommend = () => {
               (item) => item.uuid === Taro.getStorageSync('activePatient')
             ) === -1
           ) {
-            setPatientUuid(res.data.data[0].uuid);
+            Taro.setStorageSync(
+              'activePatient',
+              paientList.isLastSelectPerson()
+            );
+            setPersonList(new PersonListData(paientList.personList));
           } else {
-            setPatientUuid(Taro.getStorageSync('activePatient'));
+            paientList.setIsSelectPerson(Taro.getStorageSync('activePatient'));
+            setPersonList(new PersonListData(paientList.personList));
           }
         }
 
@@ -114,17 +117,21 @@ const Recommend = () => {
 
   useEffect(() => {
     if (isAdded) {
-      setIsSearch(true);
-      setAdded(true);
-      dispatch(addPatient(false));
+      if (personList) {
+        Taro.setStorageSync('activePatient', personList.isLastSelectPerson());
+        dispatch(addPatient(false));
+        setPersonList(personList);
+      }
     }
-  }, [isAdded, dispatch]);
 
-  useEffect(() => {
-    if (patientUuid) {
-      Taro.setStorageSync('activePatient', patientUuid);
-    }
-  }, [patientUuid]);
+    // 这里的参数也应该是从redux中获取的激活人的uuid
+  }, [personList, isAdded, dispatch]);
+
+  // useEffect(() => {
+  //   if (patientUuid) {
+  //     Taro.setStorageSync('activePatient', patientUuid);
+  //   }
+  // }, [patientUuid]);
 
   useEffect(() => {
     Taro.setNavigationBarTitle({
@@ -132,9 +139,10 @@ const Recommend = () => {
     });
   }, []);
 
+  console.log(personList);
+
   return (
     <View className="patient-box">
-      <AtNoticebar>左滑-&gt;选择患者或修改患者信息</AtNoticebar>
       <AtToast
         isOpened={getDataLoading}
         hasMask
@@ -168,7 +176,7 @@ const Recommend = () => {
         />
       </View>
       <PersonList
-        personList={personList}
+        personList={personList ? personList.personList : []}
         onRightSideClick={(modifyPatient: string) => {
           Taro.setStorageSync('modifyPatient', modifyPatient);
           Taro.navigateTo({
@@ -177,7 +185,10 @@ const Recommend = () => {
         }}
         onLeftSideClick={(activePatient: string) => {
           Taro.setStorageSync('activePatient', activePatient);
-          setPatientUuid(activePatient);
+          if (personList) {
+            personList.setIsSelectPerson(activePatient);
+            setPersonList(new PersonListData(personList.personList));
+          }
         }}
       />
       {/* {patientList.map((patientItem) => {
