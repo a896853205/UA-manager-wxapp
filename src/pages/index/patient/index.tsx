@@ -10,11 +10,12 @@ import {
   AtSearchBar,
   AtNoticebar,
 } from 'taro-ui';
+import { useSelector, useDispatch } from '@tarojs/redux';
 
 import './patient.css';
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
-import { useSelector, useDispatch } from '@tarojs/redux';
+
 import { addPatient } from '../../../actions/add-patient';
 
 // #region 书写注意
@@ -51,9 +52,7 @@ const Recommend = () => {
   const [patientName, setPatientName] = useState('');
   const [added, setAdded] = useState(false);
   const [isSearch, setIsSearch] = useState(true);
-  const { isAdded } = useSelector<Istatus, IAdd>(
-    (state) => state.addPatient
-  );
+  const { isAdded } = useSelector<Istatus, IAdd>((state) => state.addPatient);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,8 +67,7 @@ const Recommend = () => {
             limit: PATIENT_LIST_SIZE,
             like: patientName,
           };
-        }
-        else {
+        } else {
           data = {
             page: 0,
             limit: PATIENT_LIST_SIZE,
@@ -135,7 +133,7 @@ const Recommend = () => {
 
   return (
     <View className="patient-box">
-      <AtNoticebar>{"左滑->选择患者或修改患者信息"}</AtNoticebar>
+      <AtNoticebar>左滑-&gt;选择患者或修改患者信息</AtNoticebar>
       <AtToast
         isOpened={getDataLoading}
         hasMask
@@ -159,7 +157,9 @@ const Recommend = () => {
           onChange={(e) => {
             setPatientName(e);
           }}
-          onActionClick={() => { setIsSearch(true) }}
+          onActionClick={() => {
+            setIsSearch(true);
+          }}
           onClear={() => {
             setPatientName('');
             setIsSearch(true);

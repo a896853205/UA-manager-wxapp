@@ -238,8 +238,8 @@ const AddPatient = () => {
         <TaroRegionPicker
           style={{ textAlign: 'left', borderTop: 0 }}
           regionSelf={region}
-          onGetRegion={(region) => {
-            const re = region.split(' - ');
+          onGetRegion={(_region) => {
+            const re = _region.split(' - ');
             setDistrict(re[2]);
             setCity(re[1]);
             setProvince(re[0]);
