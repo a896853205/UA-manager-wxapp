@@ -13,7 +13,7 @@ interface Props {
   onLeftSideClick: Function;
   onRightSideClick: Function;
 }
-
+ 
 export default ({
   uuid, name, phone, onLeftSideClick, onRightSideClick
 }: Props) => {
