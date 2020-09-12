@@ -1,0 +1,29 @@
+.person-item-box {
+  padding: 20rpx 10rpx;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1rpx solid #ddd;
+}
+
+.person-select-box {
+  padding-right: 20rpx;
+}
+
+.person-left-box {
+  width: 90%;
+}
+
+.person-right-box {
+  width: 10%;
+  text-align: right;
+  padding: 12rpx 10rpx 0 0;
+}
+
+.person-name {
+  font-size: 32rpx;
+}
+
+.person-phone {
+  font-size: 28rpx;
+  color: #999;
+}

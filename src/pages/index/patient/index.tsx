@@ -1,9 +1,9 @@
 import Taro, { memo, useEffect, useState } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import {
-  AtList,
-  AtSwipeAction,
-  AtListItem,
+  // AtList,
+  // AtSwipeAction,
+  // AtListItem,
   AtButton,
   AtToast,
   AtMessage,
@@ -16,6 +16,7 @@ import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
 import { useSelector, useDispatch } from '@tarojs/redux';
 import { addPatient } from '../../../actions/add-patient';
+import PersonList from './list';
 
 // #region 书写注意
 //
@@ -45,7 +46,7 @@ interface Istatus {
 }
 
 const Recommend = () => {
-  const [patientList, setPatientList] = useState<any>([]);
+  const [personList, setPersonList] = useState<any>([]);
   const [getDataLoading, setGetDataLoading] = useState(true);
   const [patientUuid, setPatientUuid] = useState('');
   const [patientName, setPatientName] = useState('');
@@ -88,7 +89,7 @@ const Recommend = () => {
             type: 'error',
           });
         } else if (res.statusCode === 200) {
-          setPatientList(res.data.data);
+          setPersonList(res.data.data);
 
           if (added) {
             Taro.setStorageSync('activePatient', res.data.data[0].uuid);
@@ -166,7 +167,29 @@ const Recommend = () => {
           }}
         />
       </View>
-      <AtList>
+      <PersonList
+        personList={personList}
+        onRightSideClick={(modifyPatient: string) => {
+          Taro.setStorageSync('modifyPatient', modifyPatient);
+          Taro.navigateTo({
+            url: '/pages/add-patient/index',
+          });
+        }}
+        onLeftSideClick={(activePatient: string) => {
+          Taro.setStorageSync('activePatient', activePatient);
+          setPatientUuid(activePatient);
+        }}
+      />
+      {/* {patientList.map((patientItem) => {
+        return (
+          <PatientItem
+            // key={patientItem.uuid}
+            uuid={patientItem.uuid}
+            name={patientItem.name}
+            phone={patientItem.phone}
+          />)
+      })} */}
+      {/* <AtList>
         {patientList.map((patientItem) => (
           <AtSwipeAction
             key={patientItem.uuid}
@@ -210,7 +233,7 @@ const Recommend = () => {
             />
           </AtSwipeAction>
         ))}
-      </AtList>
+      </AtList> */}
     </View>
   );
 };
