@@ -26,7 +26,6 @@ export class PersonListData {
   }
 
   static comparePersonList(firstPersonList, secondPersonList) {
-    console.log('comparePersonList', firstPersonList, secondPersonList);
     if (!firstPersonList && !secondPersonList) return true;
     if (firstPersonList !== secondPersonList) return false;
     if (firstPersonList.length !== secondPersonList.length) return false;
@@ -85,11 +84,6 @@ interface Props {
 }
 
 const arePropsEqual = (prevProps: Props, nextProps: Props) => {
-  console.log(
-    'arePropsEqual',
-    PersonListData.comparePersonList(prevProps, nextProps)
-  );
-
   return (
     PersonListData.comparePersonList(
       prevProps.personList,
@@ -103,8 +97,6 @@ const PersonList = ({
   onRightSideClick,
   onLeftSideClick,
 }: Props) => {
-  console.log('render', personList);
-
   return (
     <View>
       {personList

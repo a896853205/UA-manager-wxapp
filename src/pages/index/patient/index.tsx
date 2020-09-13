@@ -57,7 +57,7 @@ const Recommend = () => {
 
   useEffect(() => {
     (async () => {
-      if (isSearch) {
+      if (isSearch || isAdded) {
         setGetDataLoading(true);
 
         let data;
@@ -92,40 +92,32 @@ const Recommend = () => {
 
           const paientList = new PersonListData(paientListData);
 
-          if (
+          if (isAdded && paientList) {
+            Taro.setStorageSync('activePatient', paientList.isLastSelectPerson());
+            dispatch(addPatient(false));
+          }
+          else if (
             res.data.data[0] &&
             res.data.data.findIndex(
               (item) => item.uuid === Taro.getStorageSync('activePatient')
             ) === -1
           ) {
+            // 边界情况 未找到选定医生，首次进入医生列表
             Taro.setStorageSync(
               'activePatient',
               paientList.isLastSelectPerson()
             );
-            setPersonList(new PersonListData(paientList.personList));
           } else {
             paientList.setIsSelectPerson(Taro.getStorageSync('activePatient'));
-            setPersonList(new PersonListData(paientList.personList));
           }
+          setPersonList(new PersonListData(paientList.personList));
         }
 
         setIsSearch(false);
         setGetDataLoading(false);
       }
     })();
-  }, [isSearch]);
-
-  useEffect(() => {
-    if (isAdded) {
-      if (personList) {
-        Taro.setStorageSync('activePatient', personList.isLastSelectPerson());
-        dispatch(addPatient(false));
-        setPersonList(personList);
-      }
-    }
-
-    // 这里的参数也应该是从redux中获取的激活人的uuid
-  }, [personList, isAdded, dispatch]);
+  }, [isSearch, isAdded]);
 
   // useEffect(() => {
   //   if (patientUuid) {
