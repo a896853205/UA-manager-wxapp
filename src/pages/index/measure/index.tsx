@@ -5,6 +5,7 @@ import { useDispatch } from '@tarojs/redux';
 
 import { changeMeasureType } from '../../../actions/measure';
 import Preview from './preview';
+import './measure.css';
 
 // #region 书写注意
 //
@@ -49,7 +50,7 @@ const Measure = () => {
   }, [tabCur, dispatch]);
 
   return (
-    <View className="index">
+    <View className="measure-box">
       <AtTabBar
         tabList={[{ title: '尿酸单项' }, { title: '三联检测' }]}
         onClick={(e) => {
