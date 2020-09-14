@@ -18,6 +18,7 @@ import {
 import http from '../../util/http';
 import TaroRegionPicker from '../../util/taro-region-picker';
 import { addPatient } from '../../actions/add-patient';
+import './add-patient.css';
 
 const GENDER_SELECT = ['男', '女'];
 
@@ -139,7 +140,7 @@ const AddPatient = () => {
   // relative_phone
 
   return (
-    <View>
+    <View className="add-patient-box">
       <AtToast
         isOpened={getDataLoading}
         hasMask
@@ -167,11 +168,16 @@ const AddPatient = () => {
           }}
           value={gender}
         >
-          <AtListItem
-            title=" * 性别"
-            extraText={GENDER_SELECT[gender - 1]}
-            arrow="right"
-          />
+          <View className="patient-gender-box">
+            <View className="gender-left-box">*</View>
+            <View className="gender-right-box">
+              <AtListItem
+                title="性别"
+                extraText={GENDER_SELECT[gender - 1]}
+                arrow="right"
+              />
+            </View>
+          </View>
         </Picker>
         <AtInput
           required

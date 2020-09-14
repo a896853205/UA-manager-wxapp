@@ -34,7 +34,7 @@ export default ({
       </View>
       <View className="person-right-box"
         onClick={(e) => {
-          e.stopPropagation;
+          e.stopPropagation();
           onRightSideClick(uuid);
         }}>
         <AtIcon value="edit" size="30" color="#E93B3D" />

@@ -1,0 +1,16 @@
+.patient-gender-box {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.gender-left-box {
+  padding: 34rpx 0 0 30rpx;
+  color: rgb(255, 71, 71);
+  font-size: 32rpx;
+}
+
+.gender-right-box {
+  width: 100%;
+  margin-left: -18rpx;
+}
