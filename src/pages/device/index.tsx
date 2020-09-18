@@ -26,6 +26,7 @@ import {
 import { UXSingleData } from './util/data2UXData';
 import http from '../../util/http';
 import { MEASURE_UPDATE } from '../../constants/api-constants';
+import DeviceDataList from './components/list';
 
 class Device {
   // 设备Id
@@ -142,7 +143,7 @@ const DeviceComponent = () => {
   const [devices, setDevices] = useState<Device[]>([]);
 
   const [selectedDevice, setSelectedDevice] = useState<Device>();
-  const [uploadData, setUploadData] = useState('');
+  const [uploadData, setUploadData] = useState<string[]>([]);
   const [isShow, setIsShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadText, setLoadText] = useState('');
@@ -156,6 +157,7 @@ const DeviceComponent = () => {
     setSelectedDevice(device);
 
     const hasService = await device.getBLEDeviceService(Device.SERVICE_ID);
+    let data: string[] = [];
 
     if (hasService) {
       device.getBLEDeviceCharacteristic(
@@ -163,19 +165,23 @@ const DeviceComponent = () => {
         Device.RXD,
         (characteristic) => {
           console.log(
-            `设备的: ${device.deviceId}的服务: ${
-              Device.SERVICE_ID
+            `设备的: ${device.deviceId}的服务: ${Device.SERVICE_ID
             }的RXD特征值: ${Device.RXD}读取到: ${buf2hex(characteristic.value)}`
           );
 
           const hex = buf2hex(characteristic.value);
 
           if (hex === '7b01ff007df8') {
-            device.writeBLECharacteristicValue('7b00A0017d');
+            device.writeBLECharacteristicValue('7b00A0057d');
           }
 
-          if (hex.length === 30) {
-            setUploadData(hex);
+          if (hex.length === 30 || hex.length === 38) {
+            data = [...data, hex];
+            // setLoading(false);
+          }
+
+          if (hex === '7b0140007d47') {
+            setUploadData(data);
             setLoading(false);
           }
         }
@@ -184,6 +190,8 @@ const DeviceComponent = () => {
     stopBluetoothDevicesDiscovery();
     setIsShow(false);
   };
+  console.log('uploadData=',uploadData);
+  
   // 页面加载的时候看localStorage里有没有,有的话就调用有的
   useEffect(() => {
     const device: Device = Taro.getStorageSync('selectedDevice');
@@ -234,8 +242,8 @@ const DeviceComponent = () => {
   }, []);
 
   // '1为一条,5为5条';
-  const submit = (_uploadData: string) => {
-    if (_uploadData === '') {
+  const submit = (_uploadData: string[]) => {
+    if (_uploadData === []) {
       Taro.atMessage({
         message: '请先从设备获取数据',
         type: 'error',
@@ -248,7 +256,7 @@ const DeviceComponent = () => {
         method: 'POST',
         data: {
           uuid: Taro.getStorageSync('activePatient'),
-          datas: [new UXSingleData(_uploadData)],
+          datas: [new UXSingleData(_uploadData[0])],
         },
       }).then((res) => {
         console.log(res);
@@ -312,7 +320,7 @@ const DeviceComponent = () => {
   };
 
   const breakBlueTeeth = () => {
-    setUploadData('');
+    setUploadData([]);
     setSelectedDevice(undefined);
     closeBluetoothAdapter();
   };
@@ -372,23 +380,27 @@ const DeviceComponent = () => {
             title={`设备名: ${selectedDevice ? selectedDevice.name : ''}`}
             iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
           />
-          <AtListItem
+          {uploadData.length ?
+            <DeviceDataList
+              deviceDataList={uploadData}
+            /> : null}
+          {/* <AtListItem
             title={
-              uploadData.length === 30
-                ? `最新数值为: ${new UXSingleData(uploadData).uric} μmol/L`
+              uploadData.length === 5
+                ? `最新数值为: ${new UXSingleData(uploadData[0]).uric} μmol/L`
                 : '请获取最新数值'
             }
             iconInfo={{ size: 25, color: '#78A4FA', value: 'filter' }}
           />
           <AtListItem
             title={
-              uploadData.length === 30
+              uploadData.length === 5
                 ? `时间为:
-                ${new UXSingleData(uploadData).getTimeString()}`
+                ${new UXSingleData(uploadData[0]).getTimeString()}`
                 : '请获取最新数值'
             }
             iconInfo={{ size: 25, color: '#78A4FA', value: 'clock' }}
-          />
+          /> */}
         </AtList>
       </View>
       <AtGrid
