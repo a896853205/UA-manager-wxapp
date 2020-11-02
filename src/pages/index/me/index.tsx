@@ -58,13 +58,14 @@ const Me = () => {
         status="loading"
         text="个人信息加载中..."
       />
-      <Image src={meTopBackground} className="me-background" mode="widthFix" />
+      <Image
+        src="https://s1.ax1x.com/2020/07/02/NbGpy4.png"
+        className="me-background"
+        mode="widthFix"
+      />
       <View className="me-list">
         <View className="me-item me-profile">
-          <Image
-            src={myInfo.headurl}
-            className="me-head-profile"
-          />
+          <Image src={myInfo.headurl} className="me-head-profile" />
           <View className="me-describe">
             <Text>{myInfo.name}</Text>
             <Text className="me-position">{myInfo.address}</Text>

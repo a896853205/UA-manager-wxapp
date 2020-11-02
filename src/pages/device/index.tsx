@@ -165,14 +165,19 @@ const DeviceComponent = () => {
         Device.RXD,
         (characteristic) => {
           console.log(
-            `设备的: ${device.deviceId}的服务: ${Device.SERVICE_ID
+            `设备的: ${device.deviceId}的服务: ${
+              Device.SERVICE_ID
             }的RXD特征值: ${Device.RXD}读取到: ${buf2hex(characteristic.value)}`
           );
 
           const hex = buf2hex(characteristic.value);
 
           if (hex === '7b01ff007df8') {
-            device.writeBLECharacteristicValue('7b00A0057d');
+            /**
+             * 7b00A0057d 5条
+             * 7b00A0017d 1条
+             */
+            device.writeBLECharacteristicValue('7b00A0017d');
           }
 
           if (hex.length === 30 || hex.length === 38) {
@@ -190,8 +195,8 @@ const DeviceComponent = () => {
     stopBluetoothDevicesDiscovery();
     setIsShow(false);
   };
-  console.log('uploadData=',uploadData);
-  
+  console.log('uploadData=', uploadData);
+
   // 页面加载的时候看localStorage里有没有,有的话就调用有的
   useEffect(() => {
     const device: Device = Taro.getStorageSync('selectedDevice');
@@ -380,10 +385,9 @@ const DeviceComponent = () => {
             title={`设备名: ${selectedDevice ? selectedDevice.name : ''}`}
             iconInfo={{ size: 25, color: '#78A4FA', value: 'iphone' }}
           />
-          {uploadData.length ?
-            <DeviceDataList
-              deviceDataList={uploadData}
-            /> : null}
+          {uploadData.length ? (
+            <DeviceDataList deviceDataList={uploadData} />
+          ) : null}
           {/* <AtListItem
             title={
               uploadData.length === 5

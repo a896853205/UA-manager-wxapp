@@ -23,7 +23,7 @@ const Authority = () => {
       <Swiper
         className="swiper"
         indicatorColor="#ddd"
-        indicatorActiveColor="#E93B3D"
+        indicatorActiveColor="#6190e8"
         circular
         indicatorDots
         autoplay
