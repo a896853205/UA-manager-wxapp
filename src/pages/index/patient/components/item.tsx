@@ -25,7 +25,7 @@ export default ({
     <View className="person-item-box" onClick={() => onLeftSideClick(uuid)}>
       <View className="person-select-box">
         {isSelected ? (
-          <AtIcon value="check-circle" size="35" color="#E93B3D" />
+          <AtIcon value="check-circle" size="35" color="#52c41a" />
         ) : null}
       </View>
       <View className="person-left-box">
@@ -37,7 +37,7 @@ export default ({
           e.stopPropagation();
           onRightSideClick(uuid);
         }}>
-        <AtIcon value="edit" size="30" color="#E93B3D" />
+        <AtIcon value="edit" size="30" color="#52c41a" />
       </View>
     </View>
   );

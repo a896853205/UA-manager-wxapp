@@ -161,7 +161,7 @@ const Preview = () => {
           </View>
           <View className="measure-preview">
             {uric}
-            <Text className="measure-unit">umol/L</Text>
+            <Text className="measure-unit">μmol/L</Text>
           </View>
           <View className="measure-description">
             连续<Text className="day">{uricLast}</Text>天高于目标值
@@ -178,7 +178,7 @@ const Preview = () => {
             <Text className="measure-project">尿酸</Text>
             <Text className="measure-value">
               <Text className="value-num">{TUric}</Text>
-              <Text className="measure-unit">umol/L</Text>
+              <Text className="measure-unit">μmol/L</Text>
             </Text>
             <Text>
               <Text className="day">{TUircLast}</Text>天

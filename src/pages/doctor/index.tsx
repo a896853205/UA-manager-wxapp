@@ -151,7 +151,7 @@ const Doctor = () => {
       </View>
       <View className="current-doctor-box">
         <AtCard thumb={selected} title="当前医生选择">
-          {activeDoctorList.map((doctorItem) => (
+          {activeDoctorList.length ? activeDoctorList.map((doctorItem) => (
             <AtListItem
               key={doctorItem.uuid}
               title={doctorItem.name}
@@ -166,7 +166,7 @@ const Doctor = () => {
                 });
               }}
             />
-          ))}
+          )) : <div>无</div>}
         </AtCard>
       </View>
       <AtList>

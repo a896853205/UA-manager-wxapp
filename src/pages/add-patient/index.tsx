@@ -26,7 +26,7 @@ const AddPatient = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [identify, setIdentify] = useState('');
-  const [address, setAddress] = useState('');
+  // const [address, setAddress] = useState('');
   const [relativeName, setRelativeName] = useState('');
   const [relativeRelation, setRelativeRelation] = useState('');
   const [relativePhone, setRelativePhone] = useState('');
@@ -62,7 +62,7 @@ const AddPatient = () => {
           setPhone(res.data.data.phone);
           setGender(res.data.data.gender);
           setIdentify(res.data.data.identify);
-          setAddress(res.data.data.address);
+          // setAddress(res.data.data.address);
           setRelativeName(res.data.data.relative_name);
           setRelativeRelation(res.data.data.relative_relation);
           setRelativePhone(res.data.data.relative_phone);
@@ -90,7 +90,7 @@ const AddPatient = () => {
         gender: gender,
         identify: identify,
         phone: phone,
-        address: address,
+        // address: address,
         relative_name: relativeName,
         relative_relation: relativeRelation,
         relative_phone: relativePhone,
@@ -210,7 +210,7 @@ const AddPatient = () => {
             setIdentify(`${e}`);
           }}
         />
-        <AtInput
+        {/* <AtInput
           name="address"
           title="家庭住址"
           type="text"
@@ -219,7 +219,7 @@ const AddPatient = () => {
           onChange={(e) => {
             setAddress(`${e}`);
           }}
-        />
+        /> */}
         <AtInput
           name="address"
           title="亲属姓名"
