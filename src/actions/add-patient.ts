@@ -1,4 +1,4 @@
-import { ADD_PATIENT } from '../constants/add-patient';
+import { ADD_PATIENT, ALTER_PATIENT } from '../constants/add-patient';
 
 export const addPatient = (isAdded) => {
   return {
@@ -6,3 +6,8 @@ export const addPatient = (isAdded) => {
     isAdded,
   };
 };
+
+export const alterPatient = (isAlter) => ({
+  type: ALTER_PATIENT,
+  isAlter
+})

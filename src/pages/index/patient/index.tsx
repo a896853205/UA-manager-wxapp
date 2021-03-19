@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from '@tarojs/redux';
 import './patient.css';
 import http from '../../../util/http';
 import { PATIENT_LIST } from '../../../constants/api-constants';
-import { addPatient } from '../../../actions/add-patient';
+import { addPatient, alterPatient } from '../../../actions/add-patient';
 import PersonList, { Person, PersonListData } from './components/list';
 
 // #region 书写注意
@@ -39,6 +39,7 @@ interface Recommend {
 
 interface IAdd {
   isAdded: boolean;
+  isAlter: boolean;
 }
 interface Istatus {
   addPatient: IAdd;
@@ -50,14 +51,16 @@ const Recommend = () => {
   // const [patientUuid, setPatientUuid] = useState('');
   const [patientName, setPatientName] = useState('');
   const [isSearch, setIsSearch] = useState(true);
-  const { isAdded } = useSelector<Istatus, IAdd>((state) => state.addPatient);
+  const { isAdded, isAlter } = useSelector<Istatus, IAdd>(
+    (state) => state.addPatient
+  );
   const dispatch = useDispatch();
 
   console.log(isAdded);
 
   useEffect(() => {
     (async () => {
-      if (isSearch || isAdded) {
+      if (isSearch || isAdded || isAlter) {
         setGetDataLoading(true);
 
         let data;
@@ -93,10 +96,15 @@ const Recommend = () => {
           const paientList = new PersonListData(paientListData);
 
           if (isAdded && paientList) {
-            Taro.setStorageSync('activePatient', paientList.isLastSelectPerson());
+            Taro.setStorageSync(
+              'activePatient',
+              paientList.isLastSelectPerson()
+            );
             dispatch(addPatient(false));
-          }
-          else if (
+          } else if (isAlter && paientList) {
+            paientList.setIsSelectPerson(Taro.getStorageSync('activePatient'));
+            dispatch(alterPatient(false));
+          } else if (
             res.data.data[0] &&
             res.data.data.findIndex(
               (item) => item.uuid === Taro.getStorageSync('activePatient')
@@ -117,7 +125,7 @@ const Recommend = () => {
         setGetDataLoading(false);
       }
     })();
-  }, [isSearch, isAdded]);
+  }, [isSearch, isAdded, isAlter]);
 
   // useEffect(() => {
   //   if (patientUuid) {
@@ -130,8 +138,6 @@ const Recommend = () => {
       title: '患者管理',
     });
   }, []);
-
-  console.log(personList);
 
   return (
     <View className="patient-box">

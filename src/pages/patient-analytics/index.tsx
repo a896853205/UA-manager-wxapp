@@ -73,7 +73,7 @@ const PatientAnalysis = () => {
         </AtList>
       </Picker>
       <View className="card-box">
-        <AtCard extra="额外信息" title="患者统计">
+        <AtCard title="患者统计">
           {`在${TIME_RANGE[timeSpanIndex]}内: 一共${patientList.length}个患者`}
         </AtCard>
       </View>

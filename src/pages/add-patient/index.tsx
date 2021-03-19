@@ -17,7 +17,7 @@ import {
 } from '../../constants/api-constants';
 import http from '../../util/http';
 import TaroRegionPicker from '../../util/taro-region-picker';
-import { addPatient } from '../../actions/add-patient';
+import { addPatient, alterPatient } from '../../actions/add-patient';
 import './add-patient.css';
 
 const GENDER_SELECT = ['男', '女'];
@@ -32,9 +32,9 @@ const AddPatient = () => {
   const [relativePhone, setRelativePhone] = useState('');
   const [saveDataLoading, setSaveDataLoading] = useState(false);
   const [getDataLoading, setGetDataLoading] = useState(false);
-  const [gender, setGender] = useState(0);
-  const [historyHypertension, setHistoryHypertension] = useState(0);
-  const [historyDiabetes, setHistoryDiabetes] = useState(0);
+  const [gender, setGender] = useState(null);
+  const [historyHypertension, setHistoryHypertension] = useState(null);
+  const [historyDiabetes, setHistoryDiabetes] = useState(null);
   const [region, setRegion] = useState('');
 
   const [district, setDistrict] = useState('');
@@ -126,7 +126,11 @@ const AddPatient = () => {
           type: 'error',
         });
       } else if (res.statusCode === 200) {
-        dispatch(addPatient(true));
+        if (!patientUuid) {
+          dispatch(addPatient(true));
+        } else {
+          dispatch(alterPatient(true))
+        }
         Taro.navigateBack({});
         // Taro.redirectTo({
         //   url: '../../pages/index/index?cur=1',
