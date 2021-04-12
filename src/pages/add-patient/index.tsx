@@ -72,6 +72,9 @@ const AddPatient = () => {
             setRegion(
               `${res.data.data.province} - ${res.data.data.city} - ${res.data.data.district}`
             );
+            setDistrict(res.data.data.district);
+            setCity(res.data.data.city);
+            setProvince(res.data.data.province);
           }
         }
 

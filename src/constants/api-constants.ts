@@ -17,6 +17,7 @@ export const DOCTOR_LIST = `${DominConfigs.DOMAIN}/doctor/list`;
 export const DOCTOR_DETAIL = `${DominConfigs.DOMAIN}/doctor/detail`;
 export const DOCTOR_BIND = `${DominConfigs.DOMAIN}/doctor/bind`;
 export const DOCTOR_UNBIND = `${DominConfigs.DOMAIN}/doctor/unbind`;
+export const HOSPITAL_SEARCH = `${DominConfigs.DOMAIN}/hospital/search`;
 // export const PATIENT_LIST = `${DominConfigs.DOMAIN}/patient/list`;
 
 export const DOCTOR_ACTIVE = `${DominConfigs.DOMAIN}/doctor/active`;
